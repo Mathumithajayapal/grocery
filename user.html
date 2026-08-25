@@ -1,0 +1,1431 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <title>ElderBasket Â· User Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ðŸ›’</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        /* ----- reset & base (ElderBasket theme) ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-body: #f9fafb;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --pool-primary: #16a34a; /* brand */
+            --pool-dark: #15803d;    /* brand-dark */
+            --pool-accent: #22c55e;
+            --pool-light: #dcfce7;   /* brand-light */
+            --border-light: #e5e7eb;
+            --card-bg: #ffffff;
+            --header-bg: rgba(255, 255, 255, 0.96);
+            --sidebar-bg: #ffffff;
+            --sidebar-border: #e5e7eb;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --nav-hover: #f0fdf4;
+            --status-completed-bg: #dcfce7;
+            --status-completed-text: #166534;
+            --status-pending-bg: #fef9c3;
+            --status-pending-text: #854d0e;
+            --status-processing-bg: #dbeafe;
+            --status-processing-text: #1e40af;
+            --chart-grid: #f3f4f6;
+            --input-bg: #ffffff;
+            --badge-bg: #dcfce7;
+        }
+
+        body.dark-mode {
+            --bg-body: #111827;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --pool-primary: #16a34a;
+            --pool-dark: #15803d;
+            --pool-accent: #22c55e;
+            --pool-light: #1f2937;
+            --border-light: #374151;
+            --card-bg: #1f2937;
+            --header-bg: rgba(17, 24, 39, 0.92);
+            --sidebar-bg: #1f2937;
+            --sidebar-border: #374151;
+            --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+            --nav-hover: rgba(22, 163, 74, 0.15);
+            --status-completed-bg: #065f46;
+            --status-completed-text: #86efac;
+            --status-pending-bg: #854d0e;
+            --status-pending-text: #fde047;
+            --status-processing-bg: #1e40af;
+            --status-processing-text: #93c5fd;
+            --chart-grid: #374151;
+            --input-bg: #111827;
+            --badge-bg: rgba(22, 163, 74, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* ----- SIDEBAR ----- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            color: var(--text-main);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            transform: translateX(0);
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.03);
+            border-right: 1px solid var(--sidebar-border);
+        }
+
+        body.dark-mode .sidebar {
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 1001;
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
+        body.sidebar-open {
+            overflow: hidden;
+        }
+
+        /* ============================================================
+           SIDEBAR LOGO â€” EXACT MATCH to ElderBasket text-2xl font-bold 
+           text-brand-dark gap-2 flex items-center
+           ============================================================ */
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--sidebar-border);
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem; /* gap-2 */
+            text-decoration: none;
+            margin-bottom: 0.2rem;
+            color: #15803d; /* text-brand-dark */
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+        }
+
+        body.dark-mode .brand-link {
+            color: #dcfce7; /* text-brand-light for visibility in dark mode */
+        }
+
+        .brand-link i {
+            color: #16a34a; /* text-brand */
+        }
+
+        .brand-logo-sub {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 0.25rem;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .nav-menu {
+            padding: 1.5rem 0;
+            list-style: none;
+        }
+
+        .nav-item {
+            list-style: none;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 0 12px 12px 0;
+            font-size: 0.95rem;
+        }
+
+        body.rtl-active .nav-link {
+            border-radius: 12px 0 0 12px;
+        }
+
+        .nav-link:hover {
+            background: var(--nav-hover);
+            color: var(--pool-primary);
+        }
+
+        .nav-link.active {
+            background: var(--pool-primary);
+            color: #ffffff;
+        }
+
+        .nav-link i {
+            width: 24px;
+            font-size: 1.1rem;
+            color: var(--pool-primary);
+        }
+        .nav-link.active i {
+            color: #ffffff;
+        }
+
+        .sidebar-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1.5rem;
+            margin: 1rem 0 1.5rem 0;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-top: 1px solid var(--sidebar-border);
+            font-size: 0.95rem;
+        }
+
+        .sidebar-action-btn:hover {
+            background: var(--nav-hover);
+            color: var(--pool-primary);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 1.5rem 2rem;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 70px;
+            }
+        }
+
+        /* RTL Support */
+        body.rtl-active {
+            direction: rtl;
+        }
+
+        body.rtl-active .sidebar {
+            left: auto;
+            right: 0;
+            border-right: none;
+            border-left: 1px solid var(--sidebar-border);
+        }
+
+        body.rtl-active .main-content {
+            margin-left: 0;
+            margin-right: 280px;
+        }
+
+        @media (max-width: 768px) {
+            body.rtl-active .main-content {
+                margin-right: 0;
+            }
+            body.rtl-active .sidebar {
+                transform: translateX(100%);
+            }
+            body.rtl-active .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            body.rtl-active .menu-toggle {
+                left: auto;
+                right: 1rem;
+            }
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1100;
+            background: var(--pool-primary);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.05);
+            background: var(--pool-dark);
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+        }
+
+        /* Page Container */
+        .page-container {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .page-container.active-page {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Top Header */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+        }
+
+        .page-title h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .page-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 30px;
+            padding: 0.6rem 1.2rem;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 180px;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--pool-primary);
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+            width: 200px;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+        }
+
+        .toggle-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid var(--border-light);
+            background: var(--card-bg);
+            color: var(--text-muted);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .text-btn {
+            font-size: 12px;
+            font-weight: 700;
+            width: auto;
+            border-radius: 40px;
+            padding: 0 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .icon-btn:hover {
+            background: var(--pool-light);
+            color: var(--pool-dark);
+            border-color: var(--pool-primary);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            padding-left: 0.5rem;
+            border-left: 1px solid var(--border-light);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--pool-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--pool-primary), var(--pool-accent));
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--pool-primary);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--badge-bg);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon i {
+            font-size: 1.4rem;
+            color: var(--pool-primary);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .charts-section {
+                grid-template-columns: 1.5fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+            }
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 0.8rem;
+        }
+
+        .card-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Top Items */
+        .top-item {
+            margin-bottom: 1.2rem;
+            width: 100%;
+        }
+
+        .top-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .top-item-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .top-item-value {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--pool-primary);
+        }
+
+        .progress-bar-container {
+            background: var(--bg-body);
+            border-radius: 10px;
+            height: 6px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .progress-bar-fill {
+            background: var(--pool-primary);
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        /* Tables */
+        .data-table {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        @media (max-width: 640px) {
+            table {
+                min-width: 100%;
+            }
+            th,
+            td {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        th {
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-completed {
+            background: var(--status-completed-bg);
+            color: var(--status-completed-text);
+        }
+        .status-pending {
+            background: var(--status-pending-bg);
+            color: var(--status-pending-text);
+        }
+        .status-processing {
+            background: var(--status-processing-bg);
+            color: var(--status-processing-text);
+        }
+
+        /* Badge / Chip */
+        .badge-chip {
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--badge-bg);
+            color: var(--pool-primary);
+            border: 1px solid rgba(22, 163, 74, 0.12);
+        }
+
+        /* Projects / Events Grid */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .event-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+            border-color: var(--pool-primary);
+        }
+
+        .event-image {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            background-color: var(--pool-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .event-info {
+            padding: 1.2rem;
+        }
+
+        .event-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .event-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            font-weight: 500;
+        }
+
+        .event-meta i {
+            color: var(--pool-primary);
+            width: 16px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 640px) {
+            .quick-actions {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+        }
+
+        .action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            font-weight: 600;
+            color: var(--pool-primary);
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            background: var(--pool-primary);
+            color: #ffffff;
+            border-color: var(--pool-primary);
+        }
+
+        /* Activity Feed */
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--badge-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid rgba(22, 163, 74, 0.12);
+        }
+
+        .activity-icon i {
+            color: var(--pool-primary);
+        }
+
+        .activity-content p {
+            font-weight: 500;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 0.3rem;
+        }
+
+        /* Settings Form */
+        .settings-form {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-light);
+            max-width: 800px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--pool-primary);
+        }
+
+        .save-btn {
+            background: var(--pool-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.95rem;
+            transition: background 0.3s;
+        }
+
+        .save-btn:hover {
+            background: var(--pool-dark);
+        }
+
+        @media (max-width: 640px) {
+            .save-btn {
+                width: 100%;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--pool-light);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--pool-primary);
+            border-radius: 3px;
+        }
+
+        .chart-card canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* User greeting badge */
+        .greeting-badge {
+            display: inline-block;
+            background: var(--badge-bg);
+            color: var(--pool-primary);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(22, 163, 74, 0.10);
+            text-transform: uppercase;
+            vertical-align: middle;
+            margin-left: 0.5rem;
+        }
+
+        /* Information ring */
+        .info-ring {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0.6rem 1.2rem;
+            background: var(--badge-bg);
+            border-radius: 40px;
+            border: 1px solid rgba(22, 163, 74, 0.10);
+            margin-bottom: 1.5rem;
+        }
+        .info-ring i {
+            color: var(--pool-primary);
+            font-size: 1.2rem;
+        }
+        .info-ring span {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        /* Hide search bar on mobile */
+        @media (max-width: 768px) {
+            .search-bar {
+                display: none !important;
+            }
+        }
+        @media (max-width: 768px) {
+            .header-actions {
+                justify-content: flex-end;
+                flex-direction: row;
+                width: 100%;
+            }
+
+            .user-profile {
+                border-left: none;
+                padding-left: 0;
+            }
+        }
+        /* Hide hamburger when sidebar is open (Mobile) */
+        @media (max-width: 768px) {
+            body.sidebar-open .menu-toggle {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <!-- EXACT LOGO MATCH from ElderBasket theme -->
+                <a href="index.html" class="brand-link">
+                    <i class="fas fa-shopping-basket"></i>
+                    <span>ElderBasket</span>
+                </a>
+                <span class="brand-logo-sub">User Â· Dashboard</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item" data-page="dashboard"><a class="nav-link active"><i class="fas fa-home"></i><span>Overview</span></a></li>
+                <li class="nav-item" data-page="orders"><a class="nav-link"><i class="fas fa-shopping-bag"></i><span>My Orders</span></a></li>
+                <li class="nav-item" data-page="lists"><a class="nav-link"><i class="fas fa-list-ul"></i><span>Shopping Lists</span></a></li>
+                <li class="nav-item" data-page="family"><a class="nav-link"><i class="fas fa-users"></i><span>Family Portal</span></a></li>
+                <li class="nav-item" data-page="support"><a class="nav-link"><i class="fas fa-question-circle"></i><span>Support & FAQ</span></a></li>
+                <li class="nav-item" data-page="settings"><a class="nav-link"><i class="fas fa-user-cog"></i><span>Profile Settings</span></a></li>
+            </ul>
+            <a href="signin.html" class="sidebar-action-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </aside>
+
+        <main class="main-content" id="mainContent">
+            <div id="dashboard-page" class="page-container active-page"></div>
+            <div id="orders-page" class="page-container"></div>
+            <div id="lists-page" class="page-container"></div>
+            <div id="family-page" class="page-container"></div>
+            <div id="support-page" class="page-container"></div>
+            <div id="settings-page" class="page-container"></div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // ---------- USER DATA (ElderBasket themed) ----------
+        const userData = {
+            name: 'Eleanor Rigby',
+            avatar: 'ER',
+            joined: 'Nov 2025',
+            activeOrders: 1,
+            totalSpent: 845.50,
+            deliveriesReceived: 14,
+            savedLists: 3,
+            premiumStatus: 'Active'
+        };
+
+        const orderHistory = [{
+            id: '#EB-1042',
+            date: '2026-08-15',
+            items: 12,
+            type: 'Groceries',
+            total: 85.40,
+            status: 'Completed'
+        }, {
+            id: '#EB-1038',
+            date: '2026-08-08',
+            items: 4,
+            type: 'Pharmacy',
+            total: 42.10,
+            status: 'Completed'
+        }, {
+            id: '#EB-1021',
+            date: '2026-08-01',
+            items: 15,
+            type: 'Groceries',
+            total: 112.50,
+            status: 'Completed'
+        }, {
+            id: '#EB-1055',
+            date: '2026-08-23',
+            items: 8,
+            type: 'Groceries + Pharmacy',
+            total: 64.20,
+            status: 'Processing'
+        }, {
+            id: '#EB-0988',
+            date: '2026-07-25',
+            items: 6,
+            type: 'Prepared Meals',
+            total: 55.00,
+            status: 'Completed'
+        }];
+
+        const savedLists = [{
+            id: 1,
+            name: 'Weekly Essentials',
+            updated: '2026-08-12',
+            items: 15,
+            image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=800&auto=format&fit=crop'
+        }, {
+            id: 2,
+            name: 'Pharmacy Refills',
+            updated: '2026-07-20',
+            items: 4,
+            image: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?q=80&w=800&auto=format&fit=crop'
+        }, {
+            id: 3,
+            name: 'Sunday Baking',
+            updated: '2026-06-05',
+            items: 8,
+            image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800&auto=format&fit=crop'
+        }];
+
+        const favoriteCategories = [
+            { name: 'Fresh Vegetables', value: '42 items', percent: 65 },
+            { name: 'Dairy & Eggs', value: '28 items', percent: 45 },
+            { name: 'Pharmacy', value: '12 items', percent: 25 },
+            { name: 'Bakery', value: '8 items', percent: 15 }
+        ];
+
+        const activitiesFeed = [
+            { icon: 'box-open', text: 'Order #EB-1055 is currently being picked by your shopper.', time: '2 hours ago' },
+            { icon: 'check-circle', text: 'Your recurring weekly order has been successfully generated.', time: 'Yesterday, 8:00 AM' },
+            { icon: 'star', text: 'You rated Driver James W. 5 stars. Thank you!', time: 'Aug 16, 2026' },
+            { icon: 'users', text: 'Sarah Jenkins (Daughter) updated the "Weekly Essentials" list.', time: 'Aug 14, 2026' }
+        ];
+
+        let usageChartInstance = null;
+
+        // Toggle Functions
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('elderbasket_user_darkMode', document.body.classList.contains('dark-mode'));
+            const darkIcon = document.getElementById('darkModeIconBtn');
+            if (darkIcon) darkIcon.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i>' :
+                '<i class="fas fa-moon"></i>';
+        }
+
+        function toggleRTL() {
+            document.body.classList.toggle('rtl-active');
+            localStorage.setItem('elderbasket_user_rtl', document.body.classList.contains('rtl-active'));
+            const rtlBtn = document.getElementById('rtlIconBtn');
+            if (rtlBtn) rtlBtn.innerHTML = document.body.classList.contains('rtl-active') ? 'RTL' : 'LTR';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            document.body.classList.remove('sidebar-open');
+        }
+
+        function openSidebar() {
+            sidebar.classList.add('mobile-open');
+            overlay.classList.add('active');
+            document.body.classList.add('sidebar-open');
+        }
+
+        window.showPage = function(pageId) {
+            const pages = ['dashboard', 'orders', 'lists', 'family', 'support', 'settings'];
+            pages.forEach(p => {
+                const el = document.getElementById(`${p}-page`);
+                if (el) el.classList.remove('active-page');
+            });
+            const target = document.getElementById(`${pageId}-page`);
+            if (target) target.classList.add('active-page');
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            const navItem = document.querySelector(`[data-page="${pageId}"] .nav-link`);
+            if (navItem) navItem.classList.add('active');
+            if (window.innerWidth <= 768) closeSidebar();
+        };
+
+        // Render Functions
+        function renderDashboard() {
+            const dashboardDiv = document.getElementById('dashboard-page');
+
+            dashboardDiv.innerHTML = `
+            <div class="top-header">
+              <div class="page-title">
+                <h1>Hello, ${userData.name} <span class="greeting-badge"><i class="fas fa-crown"></i> Premium Member</span></h1>
+                <p>Welcome to your personal grocery delivery dashboard.</p>
+              </div>
+              <div class="header-actions">
+                <div class="search-bar"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text" placeholder="Search past orders, items..."></div>
+                <div class="toggle-buttons">
+                  <button class="icon-btn" id="darkModeIconBtn"><i class="fas fa-moon"></i></button>
+                  <button class="icon-btn text-btn" id="rtlIconBtn">LTR</button>
+                </div>
+                <div class="user-profile">
+                  <div class="user-avatar">${userData.avatar}</div>
+                  <span style="font-weight:600;">${userData.name}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="info-ring">
+              <i class="fas fa-calendar-check"></i>
+              <span>Member since <strong style="color:var(--pool-primary);">${userData.joined}</strong></span>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-box-open"></i></div><div class="stat-value">${userData.activeOrders}</div><div class="stat-label">Active Orders</div></div>
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><div class="stat-value">${userData.deliveriesReceived}</div><div class="stat-label">Deliveries Received</div></div>
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-heart"></i></div><div class="stat-value">${userData.savedLists}</div><div class="stat-label">Saved Lists</div></div>
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-receipt"></i></div><div class="stat-value">$${userData.totalSpent.toFixed(2)}</div><div class="stat-label">Total Saved w/ Premium</div></div>
+            </div>
+
+            <div class="quick-actions">
+              <button class="action-btn" onclick="showPage('orders');"><i class="fas fa-plus-circle"></i> Place New Order</button>
+              <button class="action-btn" onclick="showPage('lists');"><i class="fas fa-list"></i> Reorder from List</button>
+              <button class="action-btn" onclick="showPage('support');"><i class="fas fa-phone-alt"></i> Call for Assistance</button>
+            </div>
+
+            <div class="charts-section">
+              <div class="chart-card"><div class="card-header"><h3>Monthly Grocery Spend</h3><span style="color:var(--pool-primary); font-size:0.8rem; font-weight:600;">Past 6 Months</span></div><div style="width:100%; height:220px; position:relative;"><canvas id="spendChart"></canvas></div></div>
+              <div class="chart-card"><div class="card-header"><h3>Most Purchased</h3></div><div id="favoritesList"></div></div>
+            </div>
+
+            <div class="data-table"><div class="card-header"><h3>Recent Orders</h3><a href="#" style="color:var(--pool-primary); font-size:0.85rem; font-weight:700; text-transform:uppercase;" onclick="showPage('orders'); return false;">View All â†’</a></div><div id="recentOrdersTable"></div></div>
+
+            <div class="chart-card"><div class="card-header"><h3>Account Notifications</h3></div><div id="activityFeed"></div></div>
+          `;
+
+            // Favorite Categories
+            document.getElementById('favoritesList').innerHTML = favoriteCategories.map(p => `
+            <div class="top-item">
+              <div class="top-item-header"><span class="top-item-name">${p.name}</span><span class="top-item-value">${p.value}</span></div>
+              <div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${p.percent}%;"></div></div>
+            </div>
+          `).join('');
+
+            // Recent Orders
+            document.getElementById('recentOrdersTable').innerHTML = `
+            <table>
+              <thead><tr><th>Order ID</th><th>Date</th><th>Type</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
+              <tbody>${orderHistory.slice(0,4).map(o => `
+                <tr>
+                  <td><strong style="color:var(--text-main)">${o.id}</strong></td>
+                  <td>${o.date}</td>
+                  <td>${o.type}</td>
+                  <td>${o.items}</td>
+                  <td>$${o.total.toFixed(2)}</td>
+                  <td><span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span></td>
+                </tr>
+              `).join('')}</tbody>
+            </table>
+          `;
+
+            // Activity feed
+            document.getElementById('activityFeed').innerHTML = activitiesFeed.map(a => `
+            <div class="activity-item">
+              <div class="activity-icon"><i class="fas fa-${a.icon}"></i></div>
+              <div class="activity-content"><p>${a.text}</p><span class="activity-time">${a.time}</span></div>
+            </div>
+          `).join('');
+
+            // Chart
+            const impCtx = document.getElementById('spendChart')?.getContext('2d');
+            if (impCtx) {
+                if (usageChartInstance) usageChartInstance.destroy();
+                usageChartInstance = new Chart(impCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                        datasets: [{
+                            label: 'Spend ($)',
+                            data: [120.50, 145.00, 110.25, 135.00, 155.40, 179.35],
+                            backgroundColor: 'rgba(22, 163, 74, 0.85)',
+                            borderColor: '#15803d',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
+
+            document.getElementById('darkModeIconBtn')?.addEventListener('click', toggleDarkMode);
+            document.getElementById('rtlIconBtn')?.addEventListener('click', toggleRTL);
+        }
+
+        function renderOrders() {
+            const active = orderHistory.filter(o => o.status === 'Processing' || o.status === 'Pending').length;
+            const completed = orderHistory.filter(o => o.status === 'Completed').length;
+            
+            document.getElementById('orders-page').innerHTML = `
+            <div class="top-header"><div class="page-title"><h1>My Orders</h1><p>Track current deliveries and view your order history.</p></div></div>
+            <div class="stats-grid">
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-truck-loading"></i></div><div class="stat-value">${active}</div><div class="stat-label">Active Orders</div></div>
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-value">${completed}</div><div class="stat-label">Past Deliveries</div></div>
+            </div>
+            <div class="data-table">
+              <table>
+                <thead><tr><th>Order ID</th><th>Date placed</th><th>Type</th><th>Items</th><th>Total</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody>${orderHistory.map(o => `
+                  <tr>
+                    <td><strong style="color:var(--text-main)">${o.id}</strong></td>
+                    <td>${o.date}</td>
+                    <td>${o.type}</td>
+                    <td>${o.items}</td>
+                    <td>$${o.total.toFixed(2)}</td>
+                    <td><span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span></td>
+                    <td><button style="background:transparent; border:none; color:var(--pool-primary); font-weight:700; cursor:pointer;">View Receipt</button></td>
+                  </tr>
+                `).join('')}</tbody>
+              </table>
+            </div>
+          `;
+        }
+
+        function renderLists() {
+            document.getElementById('lists-page').innerHTML = `
+            <div class="top-header"><div class="page-title"><h1>Shopping Lists</h1><p>Save time by reordering your favorite baskets.</p></div><div class="header-actions"><button class="action-btn" style="width:auto;"><i class="fas fa-plus"></i> Create New List</button></div></div>
+            <div class="events-grid" id="listsGrid"></div>
+          `;
+            const grid = document.getElementById('listsGrid');
+            grid.innerHTML = savedLists.map(l => `
+            <div class="event-card">
+              <div class="event-image" style="background-image:url('${l.image}');"></div>
+              <div class="event-info">
+                <div class="event-title">${l.name}</div>
+                <div class="event-meta"><i class="fas fa-clock"></i> Last updated: ${l.updated}</div>
+                <div class="event-meta" style="margin-top:0.5rem;"><i class="fas fa-shopping-basket"></i> <span style="font-weight:700;">${l.items}</span> items saved</div>
+                <button class="action-btn" style="margin-top:0.8rem; width:100%;" onclick="alert('Adding items to cart! ðŸ›’')"><i class="fas fa-cart-plus"></i> Add All to Cart</button>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        function renderFamily() {
+            document.getElementById('family-page').innerHTML = `
+            <div class="top-header"><div class="page-title"><h1>Family Portal</h1><p>Manage caregiver access to your ElderBasket account.</p></div></div>
+            
+            <div class="chart-card" style="margin-bottom: 2rem;">
+                <div class="card-header"><h3>Authorized Caregivers</h3><button style="background:var(--pool-primary); color:#fff; border:none; padding:0.5rem 1rem; border-radius:6px; font-weight:600; cursor:pointer;">+ Invite Family Member</button></div>
+                
+                <div style="display:flex; align-items:center; gap:1.5rem; padding:1.5rem; border:1px solid var(--border-light); border-radius:12px; margin-bottom:1rem;">
+                    <div style="width:60px; height:60px; border-radius:50%; background:var(--pool-light); color:var(--pool-dark); display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:700;">SJ</div>
+                    <div style="flex:1;">
+                        <h4 style="font-size:1.2rem; font-weight:700;">Sarah Jenkins</h4>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">Relationship: Daughter</p>
+                        <div style="margin-top:0.5rem;"><span class="badge-chip">Full Access</span> <span class="badge-chip">Payment Authorized</span></div>
+                    </div>
+                    <div>
+                        <button style="background:transparent; border:1px solid var(--border-light); padding:0.5rem 1rem; border-radius:6px; color:var(--text-muted); cursor:pointer;"><i class="fas fa-cog"></i> Manage</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="card-header"><h3>What Caregivers Can Do</h3></div>
+                <ul style="list-style:none; padding:0; margin:0; line-height:1.8; color:var(--text-muted);">
+                    <li><i class="fas fa-check text-brand" style="color:var(--pool-primary); margin-right:10px;"></i> Add items to your shopping lists</li>
+                    <li><i class="fas fa-check text-brand" style="color:var(--pool-primary); margin-right:10px;"></i> Track active deliveries via GPS</li>
+                    <li><i class="fas fa-check text-brand" style="color:var(--pool-primary); margin-right:10px;"></i> Receive delivery confirmation photos</li>
+                    <li><i class="fas fa-check text-brand" style="color:var(--pool-primary); margin-right:10px;"></i> Pay for orders using their saved cards</li>
+                </ul>
+            </div>
+          `;
+        }
+
+        function renderSupport() {
+            document.getElementById('support-page').innerHTML = `
+            <div class="top-header"><div class="page-title"><h1>Support & FAQ</h1><p>We are here to help make your delivery experience perfect.</p></div></div>
+            
+            <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+              <div class="stat-card" style="text-align:center; padding:3rem 2rem;">
+                  <div class="stat-icon" style="margin: 0 auto 1.5rem auto; width:80px; height:80px;"><i class="fas fa-phone-alt" style="font-size:2.5rem;"></i></div>
+                  <h3 style="font-size:1.5rem; font-weight:800; margin-bottom:0.5rem;">Call Us Directly</h3>
+                  <p style="color:var(--text-muted); margin-bottom:1.5rem;">Speak to a friendly human. Mon-Sat, 8am - 6pm.</p>
+                  <a href="tel:1800ELDERBASKET" style="display:inline-block; background:var(--pool-primary); color:#fff; font-weight:700; padding:1rem 2rem; border-radius:30px; text-decoration:none;">(800) 555-0199</a>
+              </div>
+              <div class="stat-card" style="text-align:center; padding:3rem 2rem;">
+                  <div class="stat-icon" style="margin: 0 auto 1.5rem auto; width:80px; height:80px; background:#e0e7ff;"><i class="fas fa-envelope" style="font-size:2.5rem; color:#4f46e5;"></i></div>
+                  <h3 style="font-size:1.5rem; font-weight:800; margin-bottom:0.5rem;">Email Support</h3>
+                  <p style="color:var(--text-muted); margin-bottom:1.5rem;">Drop us a message, we reply within 24 hours.</p>
+                  <a href="mailto:hello@elderbasket.com" style="display:inline-block; background:#4f46e5; color:#fff; font-weight:700; padding:1rem 2rem; border-radius:30px; text-decoration:none;">hello@elderbasket.com</a>
+              </div>
+            </div>
+          `;
+        }
+
+        function renderSettings() {
+            document.getElementById('settings-page').innerHTML = `
+            <div class="top-header"><div class="page-title"><h1>Profile Settings</h1><p>Manage your delivery address, dietary needs, and preferences.</p></div></div>
+            <div class="settings-form">
+              <h3 style="margin-bottom:1.5rem; font-weight:800; font-size:1.5rem;">Personal Details</h3>
+              <div class="form-group"><label>Full Name</label><input type="text" value="${userData.name}"></div>
+              <div class="form-group"><label>Phone Number (for delivery alerts)</label><input type="tel" value="(555) 123-4567"></div>
+              
+              <h3 style="margin:2.5rem 0 1.5rem 0; font-weight:800; font-size:1.5rem;">Delivery Information</h3>
+              <div class="form-group"><label>Primary Address</label><input type="text" value="742 Evergreen Terrace, Springfield, ST 12345"></div>
+              <div class="form-group"><label>Driver Delivery Instructions</label>
+                <textarea rows="3" style="width:100%; padding:0.8rem 1rem; border:1px solid var(--border-light); border-radius:8px; background:var(--input-bg); color:var(--text-main); font-family:inherit; resize:none;">Please bring inside and place bags on the kitchen counter. Front door is usually unlocked when expecting delivery.</textarea>
+              </div>
+
+              <h3 style="margin:2.5rem 0 1.5rem 0; font-weight:800; font-size:1.5rem;">Dietary Preferences</h3>
+              <div class="form-group"><label>Special Restrictions for Shopper (Allergies, Low Sodium, etc.)</label>
+                <input type="text" placeholder="e.g. Diabetic friendly, low sodium" value="Low sodium preferred. No peanuts.">
+              </div>
+
+              <button class="save-btn" style="margin-top:1rem;" onclick="alert('Profile updated successfully! ðŸ›’')">Save Changes</button>
+            </div>
+          `;
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => showPage(item.getAttribute(
+            'data-page'))));
+
+        // Mobile sidebar controls
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        menuToggle?.addEventListener('click', () => sidebar.classList.contains('mobile-open') ? closeSidebar() :
+            openSidebar());
+        overlay?.addEventListener('click', closeSidebar);
+
+        // Load saved preferences
+        if (localStorage.getItem('elderbasket_user_darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            const darkIcon = document.getElementById('darkModeIconBtn');
+            if (darkIcon) darkIcon.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            const darkIcon = document.getElementById('darkModeIconBtn');
+            if (darkIcon) darkIcon.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+        if (localStorage.getItem('elderbasket_user_rtl') === 'true') document.body.classList.add('rtl-active');
+
+        // Initialize all pages
+        renderDashboard();
+        renderOrders();
+        renderLists();
+        renderFamily();
+        renderSupport();
+        renderSettings();
+
+        // Re-attach global toggle listeners
+        setTimeout(() => {
+            document.getElementById('darkModeIconBtn')?.addEventListener('click', toggleDarkMode);
+            document.getElementById('rtlIconBtn')?.addEventListener('click', toggleRTL);
+        }, 100);
+    </script>
+</body>
+</html>
+
+

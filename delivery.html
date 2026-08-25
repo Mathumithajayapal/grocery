@@ -1,0 +1,571 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Information - ElderBasket</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
+    <!-- Custom configuration for accessible colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#dcfce7', // Light green background
+                            DEFAULT: '#16a34a', // Trustworthy green
+                            dark: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2 text-2xl font-bold text-brand">
+                    <i class="fas fa-shopping-basket"></i>
+                    <span>ElderBasket</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden xl:flex space-x-6 items-center font-medium text-lg text-gray-700">
+                    
+                    <!-- Home Dropdown -->
+                    <div class="relative group">
+                        <button class="hover:text-brand flex items-center gap-1 focus:outline-none">
+                            Home <i class="fas fa-caret-down text-sm"></i>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-40 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                            <a href="index.html" class="block px-4 py-3 hover:bg-brand-light hover:text-brand-dark rounded-t-lg">Home1</a>
+                            <a href="homepage2.html" class="block px-4 py-3 hover:bg-brand-light hover:text-brand-dark rounded-b-lg">Home2</a>
+                        </div>
+                    </div>
+
+                    <!-- Standard Links -->
+                    <a href="about.html" class="hover:text-brand transition-colors">About</a>
+                    <a href="service.html" class="hover:text-brand transition-colors">Service</a>
+                    <a href="blog.html" class="hover:text-brand transition-colors">Blog</a>
+                    <!-- Active Link for Delivery -->
+                    <a href="delivery.html" class="text-brand font-bold transition-colors">Delivery</a>
+                    <a href="faq.html" class="hover:text-brand transition-colors">FAQ</a>
+                    <a href="contact.html" class="hover:text-brand transition-colors">Contact</a>
+
+                    <!-- Dashboard Dropdown -->
+                    <div class="relative group">
+                        <button class="hover:text-brand flex items-center gap-1 focus:outline-none">
+                            Dashboard <i class="fas fa-caret-down text-sm"></i>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-40 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                            <a href="user.html" class="block px-4 py-3 hover:bg-brand-light hover:text-brand-dark rounded-t-lg">User</a>
+                            <a href="admin.html" class="block px-4 py-3 hover:bg-brand-light hover:text-brand-dark rounded-b-lg">Admin</a>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Actions / Login -->
+                <div class="hidden xl:flex items-center gap-4">
+                    <!-- Toggles -->
+                    <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full flex items-center justify-center bg-white border-2 border-black text-brand hover:bg-gray-100 transition-colors focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:text-brand shadow-sm" id="navThemeToggle" title="Toggle Dark Mode">
+                        <i class="fas fa-moon text-lg"></i>
+                    </button>
+                    <button onclick="toggleRTL()" class="w-10 h-10 rounded-full flex items-center justify-center bg-white border-2 border-black text-brand hover:bg-gray-100 transition-colors focus:outline-none font-bold text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-brand shadow-sm" id="navRtlToggle" title="Toggle RTL">
+                        EN
+                    </button>
+                    <a href="signin.html" class="border-2 border-brand text-brand hover:bg-brand hover:text-white px-6 py-2 rounded-full font-bold transition-all text-lg shadow-sm">
+                        Log in
+                    </a>
+                </div>
+
+                <!-- Hamburger Button (Mobile) -->
+                <button id="mobile-menu-btn" class="xl:hidden flex items-center justify-center w-12 h-12 rounded-md border-2 border-gray-200 text-gray-600 hover:text-brand hover:border-brand transition-colors">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= MOBILE MENU (Hidden by default) ================= -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden transition-opacity"></div>
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-4/5 max-w-sm bg-white shadow-2xl z-[70] transform translate-x-full transition-transform duration-300 overflow-y-auto border-l-4 border-brand">
+        <div class="p-6">
+            <div class="flex justify-end mb-6">
+                <button id="close-menu-btn" class="text-gray-500 hover:text-red-500 text-3xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <ul class="space-y-3 text-lg font-semibold text-gray-700">
+                <li><a href="index.html" class="block p-3 border rounded-lg hover:bg-brand-light hover:border-brand">Home1</a></li>
+                <li><a href="homepage2.html" class="block p-3 border rounded-lg hover:bg-brand-light hover:border-brand">Home 2</a></li>
+                <li><a href="about.html" class="block p-3 border rounded-lg hover:bg-brand-light hover:border-brand">About</a></li>
+                <li><a href="service.html" class="block p-3 border rounded-lg hover:bg-brand-light hover:border-brand">Service</a></li>
+                <li><a href="blog.html" class="block p-3 border rounded-lg hover:bg-brand-light hover:border-brand">Blog</a></li>
+                <!-- Active Mobile Link for Delivery -->
+                <li><a href="delivery.html" class="block p-3 border rounded-lg bg-brand-light border-brand text-brand-dark">Delivery</a></li>
+                <li><a href="faq.html" class="block p-3 border rounded-lg hover:bg-brand-light hover:border-brand">FAQ</a></li>
+                <li><a href="contact.html" class="block p-3 border rounded-lg hover:bg-brand-light hover:border-brand">Contact</a></li>
+                
+                <!-- Mobile Dashboard links -->
+                <li class="pt-2"><span class="block px-3 text-sm text-gray-400 uppercase tracking-wider">Dashboard</span></li>
+                <li><a href="user.html" class="block p-3 border rounded-lg hover:bg-brand-light hover:border-brand ml-4">User</a></li>
+                <li><a href="admin.html" class="block p-3 border rounded-lg hover:bg-brand-light hover:border-brand ml-4">Admin</a></li>
+                
+                <li class="pt-4 mt-4 border-t">
+                    <a href="signin.html" class="block w-full text-center bg-brand text-white p-3 rounded-lg hover:bg-brand-dark shadow-md">
+                        Login
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="flex-grow">
+        <!-- Hero Banner section -->
+        <section class="relative bg-brand-light py-20 lg:py-32 overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-brand opacity-10 blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-teal-300 opacity-20 blur-3xl"></div>
+
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-12">
+                <!-- Hero Text -->
+                <div class="flex-1 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full text-brand-dark font-bold text-sm mb-6 shadow-sm border border-brand-light">
+                        <i class="fas fa-truck text-teal-600"></i>
+                        <span>Fast & Secure Logistics</span>
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+                        Safe & Reliable <span class="text-brand">Doorstep Delivery</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        We take pride in bringing fresh groceries right to your door. Our trained, friendly Delivery team ensures a contactless and hassle-free experience tailored specifically for our senior community.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="#tracking" class="bg-brand hover:bg-brand-dark text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-map-marker-alt"></i> Track Order
+                        </a>
+                        <a href="#Delivery-zones" class="bg-white border-2 border-gray-300 hover:border-brand hover:text-brand text-gray-700 px-8 py-4 rounded-full font-bold text-lg shadow-sm transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-map"></i> View Delivery Zones
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Image Area -->
+                <div class="flex-1 w-full max-w-lg lg:max-w-none relative">
+                    <img src="Images/grocery (4).jpg" 
+                         alt="Delivery person bringing fresh groceries in paper bags" 
+                         class="rounded-3xl shadow-2xl object-cover w-full h-[400px] border-4 border-white" />
+                         
+                    <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-4">
+                        <div class="bg-teal-100 p-3 rounded-full text-teal-600">
+                            <i class="fas fa-shield-alt text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-900 text-lg">Contactless</p>
+                            <p class="text-sm text-gray-500">100% safe & hygienic</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ================= 1. DELIVERY ZONES SECTION ================= -->
+        <section id="Delivery-zones" class="py-20 bg-white border-b border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row items-center gap-16">
+                    
+                    <!-- Text Content -->
+                    <div class="flex-1 order-2 lg:order-1">
+                        <h2 class="text-brand font-bold tracking-wide uppercase text-sm mb-3">Service Areas</h2>
+                        <h3 class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">Where We Deliver</h3>
+                        <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                            ElderBasket is rapidly expanding to ensure seniors everywhere have access to fresh food. We currently service major metropolitan areas and their surrounding suburbs. Enter your zip code below to verify coverage.
+                        </p>
+                        
+                        <!-- Zip Code Checker -->
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 mb-8 shadow-sm">
+                            <label for="zipcode" class="block text-sm font-bold text-gray-700 mb-2">Check Your Zip Code</label>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <input type="text" id="zipcode" placeholder="e.g. 12345" class="flex-grow px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent">
+                                <button class="bg-brand hover:bg-brand-dark text-white px-6 py-3 rounded-xl font-bold transition-colors whitespace-nowrap">
+                                    Check Availability
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Area List -->
+                        <div class="grid grid-cols-2 gap-4 text-gray-700">
+                            <div class="flex items-center gap-2"><i class="fas fa-check-circle text-brand"></i> Downtown Core</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check-circle text-brand"></i> North Suburbs</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check-circle text-brand"></i> Westside County</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check-circle text-brand"></i> East Valley</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check-circle text-brand"></i> South Ridge</div>
+                            <div class="flex items-center gap-2 text-gray-400 italic"><i class="fas fa-spinner"></i> Expanding soon...</div>
+                        </div>
+                    </div>
+
+                    <!-- Image / Map Area -->
+                    <div class="flex-1 w-full order-1 lg:order-2 relative group">
+                        <div class="absolute inset-0 bg-brand rounded-3xl transform rotate-3 scale-105 opacity-10 transition-transform group-hover:rotate-0"></div>
+                        <img src="Images/grocery (5).jpg" 
+                             alt="Map and delivery logistics" 
+                             class="rounded-3xl shadow-xl relative z-10 w-full h-[500px] object-cover border-4 border-white">
+                        
+                        <!-- Floating Truck Icon -->
+                        <div class="absolute bottom-8 -left-6 bg-white p-5 rounded-full shadow-2xl border border-gray-100 z-20 hidden sm:flex items-center justify-center w-24 h-24">
+                            <i class="fas fa-truck-moving text-4xl text-brand"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 2. DELIVERY DAY PROTOCOL SECTION ================= -->
+        <section class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-brand font-bold tracking-wide uppercase text-sm mb-2">Our Process</h2>
+                    <h3 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">What to Expect on Delivery Day</h3>
+                    <p class="text-lg text-gray-600">We've designed our delivery protocol to ensure you are comfortable, informed, and completely satisfied with every order.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+                    <!-- Connecting Line for Desktop -->
+                    <div class="hidden md:block absolute top-12 left-1/8 right-1/8 h-1 bg-gray-200 z-0"></div>
+
+                    <!-- Step 1 -->
+                    <div class="relative z-10 flex flex-col items-center text-center">
+                        <div class="w-24 h-24 bg-white rounded-full border-4 border-brand-light flex items-center justify-center text-3xl text-brand shadow-lg mb-6">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">1. Driver Assigned</h4>
+                        <p class="text-gray-600 text-sm">You receive a text or automated phone call with your driver's name and photo when they leave the store.</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative z-10 flex flex-col items-center text-center">
+                        <div class="w-24 h-24 bg-white rounded-full border-4 border-brand-light flex items-center justify-center text-3xl text-brand shadow-lg mb-6">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">2. Live ETA</h4>
+                        <p class="text-gray-600 text-sm">Track your delivery in real-time. We'll alert you when we are approximately 5 minutes away from your home.</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative z-10 flex flex-col items-center text-center">
+                        <div class="w-24 h-24 bg-white rounded-full border-4 border-brand-light flex items-center justify-center text-3xl text-brand shadow-lg mb-6">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">3. Arrival & Setup</h4>
+                        <p class="text-gray-600 text-sm">We can leave items on the porch (contactless) or bring them directly to your kitchen counter based on your preference.</p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative z-10 flex flex-col items-center text-center">
+                        <div class="w-24 h-24 bg-brand rounded-full border-4 border-brand-light flex items-center justify-center text-3xl text-white shadow-lg mb-6">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">4. Quality Check</h4>
+                        <p class="text-gray-600 text-sm">Before leaving, our driver confirms all items are present and intact. Satisfaction guaranteed.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 3. HEALTH & SAFETY STANDARDS ================= -->
+        <section class="py-24 bg-gray-900 text-white relative overflow-hidden">
+            <!-- Decorative Icon Background -->
+            <i class="fas fa-shield-virus absolute -top-10 -right-10 text-9xl text-gray-800 opacity-50 transform rotate-12"></i>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16">
+                    <div class="max-w-2xl">
+                        <h2 class="text-brand-light font-bold tracking-wide uppercase text-sm mb-2">Strict Protocols</h2>
+                        <h3 class="text-3xl md:text-5xl font-extrabold mb-4">Uncompromising Safety Standards</h3>
+                        <p class="text-lg text-gray-400">Because we serve a vulnerable community, our hygiene and safety standards go far beyond typical delivery apps.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Standard 1 -->
+                    <div class="bg-gray-800 p-8 rounded-3xl border border-gray-700 hover:border-brand transition-colors">
+                        <div class="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center text-brand text-2xl mb-6">
+                            <i class="fas fa-hands-wash"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Sanitization Rules</h4>
+                        <p class="text-gray-400 leading-relaxed">
+                            Drivers sanitize their hands before and after every delivery. All delivery vehicles and insulated bags are wiped down with medical-grade disinfectants daily.
+                        </p>
+                    </div>
+
+                    <!-- Standard 2 -->
+                    <div class="bg-gray-800 p-8 rounded-3xl border border-gray-700 hover:border-brand transition-colors">
+                        <div class="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center text-brand text-2xl mb-6">
+                            <i class="fas fa-thermometer-half"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Temperature Control</h4>
+                        <p class="text-gray-400 leading-relaxed">
+                            Dairy, meats, and frozen goods are transported in strictly monitored thermal bags to guarantee food safety and prevent spoilage during transit.
+                        </p>
+                    </div>
+
+                    <!-- Standard 3 -->
+                    <div class="bg-gray-800 p-8 rounded-3xl border border-gray-700 hover:border-brand transition-colors">
+                        <div class="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center text-brand text-2xl mb-6">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Vetted Personnel</h4>
+                        <p class="text-gray-400 leading-relaxed">
+                            Every Delivery Specialist undergoes a rigorous background check, driving record review, and specific training on interacting safely with senior citizens.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 4. REAL-TIME TRACKING SECTION ================= -->
+        <section id="tracking" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row items-center gap-16 bg-brand-light rounded-3xl p-8 md:p-16">
+                    
+                    <!-- App/Tracking Text -->
+                    <div class="flex-1">
+                        <div class="inline-flex items-center gap-2 bg-white px-4 py-1 rounded-full text-brand-dark font-bold text-sm mb-6 shadow-sm">
+                            <i class="fas fa-mobile-alt text-brand"></i> Caregiver Tools
+                        </div>
+                        <h3 class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">Track Deliveries in Real-Time</h3>
+                        <p class="text-lg text-gray-700 mb-8 leading-relaxed">
+                            Whether you are ordering for yourself or managing groceries for a parent across the country, our tracking portal gives you total visibility. Watch the truck approach on a live map and get notified the moment groceries are safely inside.
+                        </p>
+                        
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-center gap-3 text-gray-800 font-medium">
+                                <i class="fas fa-check-circle text-brand text-xl"></i> SMS & Email notification alerts
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-800 font-medium">
+                                <i class="fas fa-check-circle text-brand text-xl"></i> Driver photo and vehicle details
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-800 font-medium">
+                                <i class="fas fa-check-circle text-brand text-xl"></i> Proof of delivery photos
+                            </li>
+                        </ul>
+                        
+                        <a href="user.html" class="inline-flex items-center justify-center bg-brand hover:bg-brand-dark text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg transition-all w-full sm:w-auto">
+                            Access Tracking Portal
+                        </a>
+                    </div>
+                    
+                    <!-- App/Tracking Image -->
+                    <div class="flex-1 w-full flex justify-center">
+                        <div class="relative w-full max-w-sm">
+                            <!-- Abstract phone shape outline behind the image -->
+                            <div class="absolute inset-0 bg-white rounded-[3rem] shadow-2xl transform translate-x-4 translate-y-4"></div>
+                            <img src="Images/grocery (6).jpg" 
+                                 alt="Person using a mobile phone to track an order" 
+                                 class="relative z-10 rounded-[2.5rem] shadow-xl w-full h-[500px] object-cover border-8 border-gray-900">
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+        <footer class="bg-gray-900 text-white pt-16 pb-8 border-t-4 border-brand">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                
+                <!-- Brand Info -->
+                <div>
+                    <a href="index.html" class="flex items-center gap-2 text-2xl font-bold text-brand mb-4">
+                        <i class="fas fa-shopping-basket"></i>
+                        <span>ElderBasket</span>
+                    </a>
+                    <p class="text-gray-400 text-base leading-relaxed mb-6">
+                        Providing safe, reliable, and friendly grocery delivery services to ensure the senior members of our community are well cared for.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand transition-colors"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand transition-colors"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand transition-colors"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links & Resources -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4 border-b-2 border-brand pb-2 inline-block">Explore</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="about.html" class="hover:text-brand-light transition-colors"><i class="fas fa-angle-right mr-2"></i>About Us</a></li>
+                        <li><a href="service.html" class="hover:text-brand-light transition-colors"><i class="fas fa-angle-right mr-2"></i>Our Services</a></li>
+                        <li><a href="faq.html" class="hover:text-brand-light transition-colors"><i class="fas fa-angle-right mr-2"></i>FAQ & Support</a></li>
+                        <li><a href="blog.html" class="hover:text-brand-light transition-colors"><i class="fas fa-angle-right mr-2"></i>Senior Health Blog</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4 border-b-2 border-brand pb-2 inline-block">Contact</h4>
+                    <ul class="space-y-4 text-gray-400">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt mt-1 text-brand"></i>
+                            <span>456 Senior Care Blvd, Austin, TX 78701</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-phone mt-1 text-brand"></i>
+                            <span>(800) 555-0199</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-envelope mt-1 text-brand"></i>
+                            <span>hello@elderbasket.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4 border-b-2 border-brand pb-2 inline-block">Newsletter</h4>
+                    <p class="text-gray-400 text-sm mb-4">Subscribe for weekly fresh deals, seasonal produce updates, and senior health tips.</p>
+                    <form class="flex flex-col gap-3">
+                        <input type="email" placeholder="Enter your email address" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-brand transition-colors" required>
+                        <button type="button" class="w-full bg-brand text-white font-bold py-3 rounded-lg hover:bg-brand-dark transition-colors flex justify-center items-center gap-2">
+                            <span>Subscribe</span> <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bottom Copyright -->
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm flex flex-col md:flex-row justify-between items-center">
+                <p>&copy; 2024 ElderBasket. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0 text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <span>|</span>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+
+            // Open Mobile Menu
+            const openMenu = () => {
+                mobileMenu.classList.remove('translate-x-full');
+                mobileOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            };
+
+            // Close Mobile Menu
+            const closeMenu = () => {
+                mobileMenu.classList.add('translate-x-full');
+                mobileOverlay.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+            };
+
+            // Event Listeners
+            mobileMenuBtn.addEventListener('click', openMenu);
+            closeMenuBtn.addEventListener('click', closeMenu);
+            mobileOverlay.addEventListener('click', closeMenu);
+        });
+    </script>
+<!-- Global Toggles Script & Styles -->
+<style>
+  html.dark { color-scheme: dark; }
+  html.dark body { background-color: #111827 !important; color: #e5e7eb !important; }
+  
+  /* Backgrounds */
+  html.dark .bg-white, html.dark .bg-gray-50 { background-color: #1f2937 !important; }
+  html.dark .bg-gray-100, html.dark .bg-gray-200 { background-color: #374151 !important; }
+  html.dark .bg-brand-light { background-color: rgba(22, 163, 74, 0.15) !important; border-color: rgba(22, 163, 74, 0.3) !important; }
+  html.dark .hover\:bg-brand-light:hover { background-color: rgba(22, 163, 74, 0.25) !important; }
+  html.dark .bg-yellow-100 { background-color: rgba(234, 179, 8, 0.15) !important; }
+  html.dark .bg-blue-100 { background-color: rgba(59, 130, 246, 0.15) !important; }
+  html.dark .bg-red-100 { background-color: rgba(239, 68, 68, 0.15) !important; }
+
+  /* Texts */
+  html.dark .text-gray-900, html.dark .text-gray-800, html.dark .text-gray-700 { color: #f3f4f6 !important; }
+  html.dark .text-gray-600 { color: #d1d5db !important; }
+  html.dark .text-gray-500, html.dark .text-gray-400 { color: #9ca3af !important; }
+  html.dark .text-brand-dark { color: #4ade80 !important; }
+
+  /* Borders */
+  html.dark .border-gray-100 { border-color: #374151 !important; }
+  html.dark .border-gray-200 { border-color: #4b5563 !important; }
+  html.dark .border-gray-300 { border-color: #6b7280 !important; }
+  html.dark .border-white { border-color: #1f2937 !important; }
+
+  /* Shadows */
+  html.dark .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5) !important; }
+  html.dark .shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px -1px rgba(0, 0, 0, 0.5) !important; }
+  html.dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5) !important; }
+  html.dark .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5) !important; }
+  html.dark .shadow-xl, html.dark .shadow-2xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important; }
+
+  /* Specific Components */
+  html.dark header, html.dark header.bg-white { background-color: #111827 !important; border-bottom: 1px solid #374151 !important; }
+  html.dark footer { background-color: #111827 !important; border-top: 1px solid #374151 !important; }
+  html.dark input, html.dark textarea, html.dark select { background-color: #374151 !important; color: #f3f4f6 !important; border-color: #4b5563 !important; }
+</style>
+<script>
+  function toggleDarkMode() {
+    document.documentElement.classList.toggle("dark");
+    const icon = document.querySelector("#navThemeToggle i");
+    if (icon) {
+      if (document.documentElement.classList.contains("dark")) {
+        icon.className = "fas fa-sun";
+      } else {
+        icon.className = "fas fa-moon";
+      }
+    }
+  }
+
+  function toggleRTL() {
+    const html = document.documentElement;
+    const currentDir = html.getAttribute("dir") || "ltr";
+    const newDir = currentDir === "rtl" ? "ltr" : "rtl";
+    html.setAttribute("dir", newDir);
+    
+    const btn = document.querySelector("#navRtlToggle");
+    if (btn) {
+      if (newDir === "rtl") {
+        btn.innerText = "LTR";
+      } else {
+        btn.innerText = "RTL";
+      }
+    }
+  }
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

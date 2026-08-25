@@ -1,0 +1,1386 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <title>ElderBasket Â· Admin</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ðŸ›’</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        /* ----- reset & base (ElderBasket theme) ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-body: #f9fafb;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --pool-primary: #16a34a; /* brand */
+            --pool-dark: #15803d;    /* brand-dark */
+            --pool-accent: #22c55e;
+            --pool-light: #dcfce7;   /* brand-light */
+            --border-light: #e5e7eb;
+            --card-bg: #ffffff;
+            --header-bg: rgba(255, 255, 255, 0.96);
+            --sidebar-bg: #ffffff;
+            --sidebar-border: #e5e7eb;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --nav-hover: #f0fdf4;
+            --status-completed-bg: #dcfce7;
+            --status-completed-text: #166534;
+            --status-pending-bg: #fef9c3;
+            --status-pending-text: #854d0e;
+            --status-processing-bg: #dbeafe;
+            --status-processing-text: #1e40af;
+            --chart-grid: #f3f4f6;
+            --input-bg: #ffffff;
+        }
+
+        body.dark-mode {
+            --bg-body: #111827;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --pool-primary: #16a34a;
+            --pool-dark: #15803d;
+            --pool-accent: #22c55e;
+            --pool-light: #1f2937;
+            --border-light: #374151;
+            --card-bg: #1f2937;
+            --header-bg: rgba(17, 24, 39, 0.92);
+            --sidebar-bg: #1f2937;
+            --sidebar-border: #374151;
+            --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+            --nav-hover: rgba(22, 163, 74, 0.15);
+            --status-completed-bg: #065f46;
+            --status-completed-text: #86efac;
+            --status-pending-bg: #854d0e;
+            --status-pending-text: #fde047;
+            --status-processing-bg: #1e40af;
+            --status-processing-text: #93c5fd;
+            --chart-grid: #374151;
+            --input-bg: #111827;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* ----- SIDEBAR ----- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            color: var(--text-main);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            transform: translateX(0);
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.03);
+            border-right: 1px solid var(--sidebar-border);
+        }
+
+        body.dark-mode .sidebar {
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 1001;
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
+        body.sidebar-open {
+            overflow: hidden;
+        }
+
+        /* ============================================================
+           SIDEBAR LOGO â€” EXACT MATCH to ElderBasket text-2xl font-bold 
+           text-brand-dark gap-2 flex items-center
+           ============================================================ */
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--sidebar-border);
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem; /* gap-2 */
+            text-decoration: none;
+            margin-bottom: 0.2rem;
+            color: #15803d; /* text-brand-dark */
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+        }
+
+        body.dark-mode .brand-link {
+            color: #dcfce7; /* text-brand-light for visibility in dark mode */
+        }
+
+        .brand-link i {
+            color: #16a34a; /* text-brand */
+        }
+
+        .brand-logo-sub {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 0.25rem;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .nav-menu {
+            padding: 1.5rem 0;
+            list-style: none;
+        }
+
+        .nav-item {
+            list-style: none;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 0 12px 12px 0;
+            font-size: 0.95rem;
+        }
+
+        body.rtl-active .nav-link {
+            border-radius: 12px 0 0 12px;
+        }
+
+        .nav-link:hover {
+            background: var(--nav-hover);
+            color: var(--pool-primary);
+        }
+
+        .nav-link.active {
+            background: var(--pool-primary);
+            color: #ffffff;
+        }
+
+        .nav-link i {
+            width: 24px;
+            font-size: 1.1rem;
+            color: var(--pool-primary);
+        }
+        .nav-link.active i {
+            color: #ffffff;
+        }
+
+        .sidebar-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1.5rem;
+            margin: 1rem 0 1.5rem 0;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-top: 1px solid var(--sidebar-border);
+            font-size: 0.95rem;
+        }
+
+        .sidebar-action-btn:hover {
+            background: var(--nav-hover);
+            color: var(--pool-primary);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 1.5rem 2rem;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 70px;
+            }
+        }
+
+        /* RTL Support */
+        body.rtl-active {
+            direction: rtl;
+        }
+
+        body.rtl-active .sidebar {
+            left: auto;
+            right: 0;
+            border-right: none;
+            border-left: 1px solid var(--sidebar-border);
+        }
+
+        body.rtl-active .main-content {
+            margin-left: 0;
+            margin-right: 280px;
+        }
+
+        @media (max-width: 768px) {
+            body.rtl-active .main-content {
+                margin-right: 0;
+            }
+            body.rtl-active .sidebar {
+                transform: translateX(100%);
+            }
+            body.rtl-active .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            body.rtl-active .menu-toggle {
+                left: auto;
+                right: 1rem;
+            }
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1100;
+            background: var(--pool-primary);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.05);
+            background: var(--pool-dark);
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+        }
+
+        /* Page Container */
+        .page-container {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .page-container.active-page {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Top Header */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+        }
+
+        .page-title h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .page-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 30px;
+            padding: 0.6rem 1.2rem;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 180px;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--pool-primary);
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+            width: 200px;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+        }
+
+        .toggle-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid var(--border-light);
+            background: var(--card-bg);
+            color: var(--text-muted);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .text-btn {
+            font-size: 12px;
+            font-weight: 700;
+            width: auto;
+            border-radius: 40px;
+            padding: 0 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .icon-btn:hover {
+            background: var(--pool-light);
+            color: var(--pool-dark);
+            border-color: var(--pool-primary);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            padding-left: 0.5rem;
+            border-left: 1px solid var(--border-light);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--pool-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--pool-primary);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--pool-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon i {
+            font-size: 1.4rem;
+            color: var(--pool-primary);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .charts-section {
+                grid-template-columns: 1.5fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+            }
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 0.8rem;
+        }
+
+        .card-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Top Items (Projects / Services) */
+        .top-item {
+            margin-bottom: 1.2rem;
+            width: 100%;
+        }
+
+        .top-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .top-item-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .top-item-value {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--pool-primary);
+        }
+
+        .progress-bar-container {
+            background: var(--bg-body);
+            border-radius: 10px;
+            height: 6px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .progress-bar-fill {
+            background: var(--pool-primary);
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        /* Tables */
+        .data-table {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        @media (max-width: 640px) {
+            table {
+                min-width: 100%;
+            }
+            th,
+            td {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        th {
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-completed {
+            background: var(--status-completed-bg);
+            color: var(--status-completed-text);
+        }
+        .status-pending {
+            background: var(--status-pending-bg);
+            color: var(--status-pending-text);
+        }
+        .status-processing {
+            background: var(--status-processing-bg);
+            color: var(--status-processing-text);
+        }
+
+        /* Projects / Sites Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+            border-color: var(--pool-primary);
+        }
+
+        .project-image {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            background-color: var(--pool-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .project-info {
+            padding: 1.2rem;
+        }
+
+        .project-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .project-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        .project-meta span {
+            color: var(--pool-primary);
+            font-weight: 700;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 640px) {
+            .quick-actions {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+        }
+
+        .action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            font-weight: 600;
+            color: var(--pool-primary);
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            background: var(--pool-primary);
+            color: #ffffff;
+            border-color: var(--pool-primary);
+        }
+
+        /* Activity Feed */
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--pool-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-icon i {
+            color: var(--pool-primary);
+        }
+
+        .activity-content p {
+            font-weight: 500;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 0.3rem;
+        }
+
+        /* Analytics Grid */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Settings Form */
+        .settings-form {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-light);
+            max-width: 800px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--pool-primary);
+        }
+
+        .save-btn {
+            background: var(--pool-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.3s;
+        }
+
+        .save-btn:hover {
+            background: var(--pool-dark);
+        }
+
+        @media (max-width: 640px) {
+            .save-btn {
+                width: 100%;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--pool-primary);
+            border-radius: 3px;
+        }
+
+        .chart-card canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* custom badge */
+        .elder-badge {
+            display: inline-block;
+            background: var(--pool-light);
+            color: var(--pool-dark);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        /* Hide search bar on mobile */
+        @media (max-width: 768px) {
+            .search-bar {
+                display: none !important;
+            }
+            .header-actions {
+                justify-content: flex-end;
+                flex-direction: row;
+                width: 100%;
+            }
+            .user-profile {
+                border-left: none;
+                padding-left: 0;
+            }
+            body.sidebar-open .menu-toggle {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <!-- EXACT LOGO implementation mirroring Tailwind's classes: text-2xl font-bold text-brand gap-2 flex items-center -->
+                <a href="index.html" class="brand-link">
+                    <i class="fas fa-shopping-basket"></i>
+                    <span>ElderBasket</span>
+                </a>
+                <span class="brand-logo-sub">Senior Delivery Â· Admin</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item" data-page="dashboard"><a class="nav-link active"><i class="fas fa-chart-line"></i><span>Overview</span></a></li>
+                <li class="nav-item" data-page="deliveries"><a class="nav-link"><i class="fas fa-truck"></i><span>Deliveries</span></a></li>
+                <li class="nav-item" data-page="customers"><a class="nav-link"><i class="fas fa-users"></i><span>Customers</span></a></li>
+                <li class="nav-item" data-page="drivers"><a class="nav-link"><i class="fas fa-id-badge"></i><span>Drivers</span></a></li>
+                <li class="nav-item" data-page="analytics"><a class="nav-link"><i class="fas fa-chart-pie"></i><span>Analytics</span></a></li>
+                <li class="nav-item" data-page="settings"><a class="nav-link"><i class="fas fa-sliders-h"></i><span>Settings</span></a></li>
+            </ul>
+            <a href="signin.html" class="sidebar-action-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </aside>
+
+        <main class="main-content" id="mainContent">
+            <div id="dashboard-page" class="page-container active-page"></div>
+            <div id="deliveries-page" class="page-container"></div>
+            <div id="customers-page" class="page-container"></div>
+            <div id="drivers-page" class="page-container"></div>
+            <div id="analytics-page" class="page-container"></div>
+            <div id="settings-page" class="page-container"></div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // ---------- DATA (ElderBasket themed) ----------
+        const deliveriesData = [{
+            id: '#EB-2045',
+            customer: 'Margaret T.',
+            date: '2026-08-22',
+            type: 'Grocery',
+            driver: 'James W.',
+            status: 'Processing'
+        }, {
+            id: '#EB-2044',
+            customer: 'Arthur M.',
+            date: '2026-08-22',
+            type: 'Pharmacy',
+            driver: 'Sarah L.',
+            status: 'Completed'
+        }, {
+            id: '#EB-2043',
+            customer: 'Eleanor R.',
+            date: '2026-08-21',
+            type: 'Meal Kit',
+            driver: 'David C.',
+            status: 'Completed'
+        }, {
+            id: '#EB-2046',
+            customer: 'Robert J.',
+            date: '2026-08-23',
+            type: 'Grocery',
+            driver: 'Pending',
+            status: 'Pending'
+        }, {
+            id: '#EB-2041',
+            customer: 'Helen S.',
+            date: '2026-08-21',
+            type: 'Grocery + Pharmacy',
+            driver: 'James W.',
+            status: 'Completed'
+        }];
+
+        const customersData = [{
+            id: 1,
+            name: 'Margaret Thorne',
+            status: 'Active Premium',
+            orders: 142,
+            image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=150&auto=format&fit=crop'
+        }, {
+            id: 2,
+            name: 'Arthur Mitchell',
+            status: 'Active Basic',
+            orders: 84,
+            image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150&auto=format&fit=crop'
+        }, {
+            id: 3,
+            name: 'Eleanor Rigby',
+            status: 'Active Premium',
+            orders: 56,
+            image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&auto=format&fit=crop'
+        }, {
+            id: 4,
+            name: 'Robert Jenkins',
+            status: 'New Customer',
+            orders: 2,
+            image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop'
+        }];
+
+        const driversData = [{
+            name: 'James Wilson',
+            email: 'j.wilson@elderbasket.com',
+            deliveries: 412,
+            rating: 4.9,
+            tier: 'Senior Driver'
+        }, {
+            name: 'Sarah Lewis',
+            email: 's.lewis@elderbasket.com',
+            deliveries: 328,
+            rating: 5.0,
+            tier: 'Senior Driver'
+        }, {
+            name: 'David Chen',
+            email: 'd.chen@elderbasket.com',
+            deliveries: 156,
+            rating: 4.8,
+            tier: 'Standard'
+        }, {
+            name: 'Amanda Torres',
+            email: 'a.torres@elderbasket.com',
+            deliveries: 89,
+            rating: 4.9,
+            tier: 'Standard'
+        }, {
+            name: 'Michael Chang',
+            email: 'm.chang@elderbasket.com',
+            deliveries: 24,
+            rating: 5.0,
+            tier: 'Trainee'
+        }];
+
+        const topCategories = [
+            { name: 'Fresh Produce', value: '45% of orders', percent: 45 },
+            { name: 'Pharmacy & Meds', value: '30% of orders', percent: 30 },
+            { name: 'Dairy & Eggs', value: '15% of orders', percent: 15 },
+            { name: 'Prepared Meals', value: '10% of orders', percent: 10 }
+        ];
+
+        const activitiesFeed = [
+            { icon: 'user-plus', text: 'New customer Robert J. registered via Family Portal.', time: '10 minutes ago' },
+            { icon: 'check-circle', text: 'Delivery #EB-2044 marked as completed by Sarah L.', time: '2 hours ago' },
+            { icon: 'exclamation-triangle', text: 'Alert: Heavy traffic reported in North Suburbs affecting 3 deliveries.', time: 'Yesterday, 4:15 PM' },
+            { icon: 'star', text: '5-star review received from Margaret T. for driver James W.', time: 'Yesterday, 11:30 AM' }
+        ];
+
+        let salesChartInstance = null;
+
+        // Toggle Functions
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('elderbasket_admin_darkMode', document.body.classList.contains('dark-mode'));
+            const darkIcon = document.getElementById('darkModeIconBtn');
+            if (darkIcon) darkIcon.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i>' :
+                '<i class="fas fa-moon"></i>';
+        }
+
+        function toggleRTL() {
+            document.body.classList.toggle('rtl-active');
+            localStorage.setItem('elderbasket_admin_rtl', document.body.classList.contains('rtl-active'));
+            const rtlBtn = document.getElementById('rtlIconBtn');
+            if (rtlBtn) rtlBtn.innerHTML = document.body.classList.contains('rtl-active') ? 'RTL' : 'LTR';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            document.body.classList.remove('sidebar-open');
+        }
+
+        function openSidebar() {
+            sidebar.classList.add('mobile-open');
+            overlay.classList.add('active');
+            document.body.classList.add('sidebar-open');
+        }
+
+        window.showPage = function(pageId) {
+            const pages = ['dashboard', 'deliveries', 'customers', 'drivers', 'analytics', 'settings'];
+            pages.forEach(p => {
+                const el = document.getElementById(`${p}-page`);
+                if (el) el.classList.remove('active-page');
+            });
+            const target = document.getElementById(`${pageId}-page`);
+            if (target) target.classList.add('active-page');
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            const navItem = document.querySelector(`[data-page="${pageId}"] .nav-link`);
+            if (navItem) navItem.classList.add('active');
+            if (window.innerWidth <= 768) closeSidebar();
+        };
+
+        // Render Functions
+        function renderDashboard() {
+            const dashboardDiv = document.getElementById('dashboard-page');
+            dashboardDiv.innerHTML = `
+            <div class="top-header">
+              <div class="page-title"><h1>Platform Overview</h1><p>Daily metrics for senior delivery operations.</p></div>
+              <div class="header-actions">
+                <div class="search-bar"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text" placeholder="Search orders, customers..."></div>
+                <div class="toggle-buttons">
+                  <button class="icon-btn" id="darkModeIconBtn"><i class="fas fa-moon"></i></button>
+                  <button class="icon-btn text-btn" id="rtlIconBtn">LTR</button>
+                </div>
+                <div class="user-profile"><div class="user-avatar"><i class="fas fa-user-shield"></i></div><span style="font-weight:600;">Admin</span></div>
+              </div>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-truck"></i></div><div class="stat-value">1,248</div><div class="stat-label">Monthly Deliveries</div></div>
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value">850+</div><div class="stat-label">Active Seniors</div></div>
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-id-badge"></i></div><div class="stat-value">45</div><div class="stat-label">Vetted Drivers</div></div>
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-star"></i></div><div class="stat-value">4.9</div><div class="stat-label">Average Rating</div></div>
+            </div>
+            <div class="quick-actions">
+              <button class="action-btn" id="addOrderBtn"><i class="fas fa-plus-circle"></i> Create Manual Order</button>
+              <button class="action-btn" onclick="showPage('deliveries');"><i class="fas fa-map-marked-alt"></i> Dispatch Dashboard</button>
+              <button class="action-btn" id="contactDriverBtn"><i class="fas fa-comment-dots"></i> Message Drivers</button>
+            </div>
+            <div class="charts-section">
+              <div class="chart-card"><div class="card-header"><h3>Order Volume</h3><span style="color:var(--text-muted); font-size:0.8rem;">Last 6 Months</span></div><div style="width:100%; height:220px; position:relative;"><canvas id="salesChart"></canvas></div></div>
+              <div class="chart-card"><div class="card-header"><h3>Popular Categories</h3></div><div id="topCategoriesList"></div></div>
+            </div>
+            <div class="data-table"><div class="card-header"><h3>Recent Deliveries</h3><a href="#" style="color:var(--pool-primary); font-size:0.85rem; font-weight:700;" onclick="showPage('deliveries'); return false;">View All â†’</a></div><div id="recentOpsTable"></div></div>
+            <div class="chart-card"><div class="card-header"><h3>System Activity</h3></div><div id="activityFeed"></div></div>
+          `;
+
+            document.getElementById('topCategoriesList').innerHTML = topCategories.map(p => `
+            <div class="top-item">
+              <div class="top-item-header"><span class="top-item-name">${p.name}</span><span class="top-item-value">${p.value}</span></div>
+              <div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${p.percent}%;"></div></div>
+            </div>
+          `).join('');
+
+            document.getElementById('recentOpsTable').innerHTML = `
+            <table>
+              <thead><tr><th>Order ID</th><th>Customer</th><th>Category</th><th>Driver</th><th>Status</th></tr></thead>
+              <tbody>${deliveriesData.slice(0,4).map(o => `
+                <tr>
+                  <td><strong style="color:var(--text-main)">${o.id}</strong></td>
+                  <td>${o.customer}</td>
+                  <td>${o.type}</td>
+                  <td>${o.driver}</td>
+                  <td><span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span></td>
+                </tr>
+              `).join('')}</tbody>
+            </table>
+          `;
+
+            document.getElementById('activityFeed').innerHTML = activitiesFeed.map(a => `
+            <div class="activity-item">
+              <div class="activity-icon"><i class="fas fa-${a.icon}"></i></div>
+              <div class="activity-content"><p>${a.text}</p><span class="activity-time">${a.time}</span></div>
+            </div>
+          `).join('');
+
+            const salesCtx = document.getElementById('salesChart')?.getContext('2d');
+            if (salesCtx) {
+                if (salesChartInstance) salesChartInstance.destroy();
+                salesChartInstance = new Chart(salesCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                        datasets: [{
+                            label: 'Total Deliveries',
+                            data: [850, 920, 1050, 1100, 1180, 1248],
+                            borderColor: '#16a34a',
+                            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
+
+            document.getElementById('darkModeIconBtn')?.addEventListener('click', toggleDarkMode);
+            document.getElementById('rtlIconBtn')?.addEventListener('click', toggleRTL);
+            document.getElementById('addOrderBtn')?.addEventListener('click', () => alert('Order form opening...'));
+            document.getElementById('contactDriverBtn')?.addEventListener('click', () => alert('Messaging panel opening...'));
+        }
+
+        function renderDeliveries() {
+            const pending = deliveriesData.filter(o => o.status === 'Pending').length;
+            const processing = deliveriesData.filter(o => o.status === 'Processing').length;
+            const completed = deliveriesData.filter(o => o.status === 'Completed').length;
+            document.getElementById('deliveries-page').innerHTML = `
+            <div class="top-header"><div class="page-title"><h1>Delivery Dispatch</h1><p>Monitor and assign active orders.</p></div><div class="header-actions"><div class="search-bar"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text" placeholder="Search Order ID..."></div></div></div>
+            <div class="stats-grid">
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-value">${pending}</div><div class="stat-label">Awaiting Dispatch</div></div>
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-truck-loading"></i></div><div class="stat-value">${processing}</div><div class="stat-label">In Transit / Shopping</div></div>
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-value">${completed}</div><div class="stat-label">Delivered Today</div></div>
+            </div>
+            <div class="data-table">
+              <table>
+                <thead><tr><th>Order ID</th><th>Customer</th><th>Date Needed</th><th>Category</th><th>Assigned Driver</th><th>Status</th></tr></thead>
+                <tbody>${deliveriesData.map(o => `
+                  <tr>
+                    <td><strong style="color:var(--text-main)">${o.id}</strong></td>
+                    <td>${o.customer}</td>
+                    <td>${o.date}</td>
+                    <td>${o.type}</td>
+                    <td>${o.driver}</td>
+                    <td><span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span></td>
+                  </tr>
+                `).join('')}</tbody>
+              </table>
+            </div>
+          `;
+        }
+
+        function renderCustomers() {
+            document.getElementById('customers-page').innerHTML = `
+            <div class="top-header"><div class="page-title"><h1>Customer Directory</h1><p>Manage senior accounts and family portals.</p></div><div class="header-actions"><button class="action-btn" style="width:auto;"><i class="fas fa-user-plus"></i> Add Customer</button></div></div>
+            <div class="projects-grid" id="customersGrid"></div>
+          `;
+            const grid = document.getElementById('customersGrid');
+            grid.innerHTML = customersData.map(s => `
+            <div class="project-card">
+              <div class="project-image" style="background-image:url('${s.image}'); height:150px; background-position:top;"></div>
+              <div class="project-info">
+                <div class="project-title">${s.name}</div>
+                <div style="margin-top:0.25rem;"><span class="elder-badge">${s.status}</span></div>
+                <div class="project-meta">Lifetime Orders: <span>${s.orders}</span></div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        function renderDrivers() {
+            const total = driversData.length;
+            const topRated = driversData.filter(d => d.rating >= 4.9).length;
+            document.getElementById('drivers-page').innerHTML = `
+            <div class="top-header"><div class="page-title"><h1>Driver Fleet</h1><p>Manage vetted delivery specialists.</p></div></div>
+            <div class="stats-grid">
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-id-badge"></i></div><div class="stat-value">${total}</div><div class="stat-label">Total Drivers</div></div>
+              <div class="stat-card"><div class="stat-icon"><i class="fas fa-star"></i></div><div class="stat-value">${topRated}</div><div class="stat-label">Top Rated (4.9+)</div></div>
+            </div>
+            <div class="data-table">
+              <table>
+                <thead><tr><th>Driver Name</th><th>Email</th><th>Total Deliveries</th><th>Rating</th><th>Status</th></tr></thead>
+                <tbody>${driversData.map(d => `
+                  <tr>
+                    <td><strong style="color:var(--text-main)">${d.name}</strong></td>
+                    <td>${d.email}</td>
+                    <td>${d.deliveries}</td>
+                    <td>${d.rating} <i class="fas fa-star text-yellow-400" style="color:#facc15"></i></td>
+                    <td><span class="status-badge ${d.tier === 'Senior Driver' ? 'status-completed' : 'status-processing'}">${d.tier}</span></td>
+                  </tr>
+                `).join('')}</tbody>
+              </table>
+            </div>
+          `;
+        }
+
+        function renderAnalytics() {
+            document.getElementById('analytics-page').innerHTML = `
+            <div class="top-header"><div class="page-title"><h1>Analytics</h1><p>Performance and financial metrics.</p></div></div>
+            <div class="analytics-grid">
+              <div class="chart-card"><div class="card-header"><h3>Quarterly Revenue</h3></div><div style="height:220px;"><canvas id="revenueChart"></canvas></div></div>
+              <div class="chart-card"><div class="card-header"><h3>Order Sources</h3></div><div style="height:220px;"><canvas id="sourceChart"></canvas></div></div>
+            </div>
+          `;
+
+            const impCtx = document.getElementById('revenueChart')?.getContext('2d');
+            if (impCtx) new Chart(impCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4 (Proj)'],
+                    datasets: [{ label: 'Revenue ($)', data: [45000, 52000, 68000, 85000], backgroundColor: '#16a34a' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const catCtx = document.getElementById('sourceChart')?.getContext('2d');
+            if (catCtx) new Chart(catCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Family Portal App', 'Senior Phone Call', 'Website'],
+                    datasets: [{ data: [50, 35, 15], backgroundColor: ['#16a34a', '#22c55e', '#dcfce7'], borderColor: 'transparent' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        function renderSettings() {
+            document.getElementById('settings-page').innerHTML = `
+            <div class="top-header"><div class="page-title"><h1>Platform Settings</h1><p>Configure app defaults and pricing.</p></div></div>
+            <div class="settings-form">
+              <h3 style="margin-bottom:1.5rem; font-weight:800; font-size:1.5rem;">General Configurations</h3>
+              <div class="form-group"><label>Platform Name</label><input type="text" id="orgName" value="ElderBasket"></div>
+              <div class="form-group"><label>Support Email</label><input type="email" id="orgEmail" value="hello@elderbasket.com"></div>
+              <div class="form-group"><label>Standard Delivery Fee</label><input type="text" id="currency" value="$12.00"></div>
+              <div class="form-group"><label>Premium Monthly Fee</label><input type="text" id="capacity" value="$39.00"></div>
+              <button class="save-btn" onclick="alert('Settings saved successfully.')">Save Changes</button>
+            </div>
+          `;
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => showPage(item.getAttribute(
+            'data-page'))));
+
+        // Mobile sidebar controls
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        menuToggle?.addEventListener('click', () => sidebar.classList.contains('mobile-open') ? closeSidebar() :
+            openSidebar());
+        overlay?.addEventListener('click', closeSidebar);
+
+        // Load saved preferences
+        if (localStorage.getItem('elderbasket_admin_darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            const darkIcon = document.getElementById('darkModeIconBtn');
+            if (darkIcon) darkIcon.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            const darkIcon = document.getElementById('darkModeIconBtn');
+            if (darkIcon) darkIcon.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+        if (localStorage.getItem('elderbasket_admin_rtl') === 'true') document.body.classList.add('rtl-active');
+
+        // Initialize all pages
+        renderDashboard();
+        renderDeliveries();
+        renderCustomers();
+        renderDrivers();
+        renderAnalytics();
+        renderSettings();
+
+        // Re-attach global toggle listeners
+        setTimeout(() => {
+            document.getElementById('darkModeIconBtn')?.addEventListener('click', toggleDarkMode);
+            document.getElementById('rtlIconBtn')?.addEventListener('click', toggleRTL);
+        }, 100);
+    </script>
+</body>
+</html>
+
