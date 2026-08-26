@@ -78,10 +78,10 @@
                 <!-- Actions / Login -->
                 <div class="hidden xl:flex items-center gap-4">
                     <!-- Toggles -->
-                    <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full flex items-center justify-center bg-white border-2 border-black text-brand hover:bg-gray-100 transition-colors focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:text-brand shadow-sm" id="navThemeToggle" title="Toggle Dark Mode">
+                    <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-green-500 bg-green-100 text-green-700 hover:bg-green-500 hover:text-white transition-all focus:outline-none shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-green-400" id="navThemeToggle" title="Toggle Dark Mode">
                         <i class="fas fa-moon text-lg"></i>
                     </button>
-                    <button onclick="toggleRTL()" class="w-10 h-10 rounded-full flex items-center justify-center bg-white border-2 border-black text-brand hover:bg-gray-100 transition-colors focus:outline-none font-bold text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-brand shadow-sm" id="navRtlToggle" title="Toggle RTL">
+                    <button onclick="toggleRTL()" class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-green-500 bg-green-100 text-green-700 hover:bg-green-500 hover:text-white transition-all focus:outline-none font-bold text-sm shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-green-400" id="navRtlToggle" title="Toggle RTL">
                         EN
                     </button>
                     <a href="signin.html" class="border-2 border-brand text-brand hover:bg-brand hover:text-white px-6 py-2 rounded-full font-bold transition-all text-lg shadow-sm">
@@ -156,7 +156,7 @@
                     
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                         <a href="tel:1800ELDERBASKET" class="bg-brand hover:bg-brand-dark text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
-                            <i class="fas fa-phone-alt"></i> Call Us Now
+                          <i class="fas fa-phone-alt rotate-90"></i> Call Us Now
                         </a>
                         <a href="#contact-form" class="bg-white border-2 border-gray-300 hover:border-brand hover:text-brand text-gray-700 px-8 py-4 rounded-full font-bold text-lg shadow-sm transition-all flex items-center justify-center gap-2">
                             <i class="fas fa-paper-plane"></i> Send a Message
@@ -197,7 +197,7 @@
                     <!-- Phone Contact -->
                     <div class="bg-gray-50 p-10 rounded-3xl border border-gray-100 text-center hover:shadow-xl transition-shadow group">
                         <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-phone-alt"></i>
+                         <i class="fas fa-phone-alt rotate-90"></i>
                         </div>
                         <h4 class="text-xl font-bold text-gray-900 mb-2">Call Our Support</h4>
                         <p class="text-gray-600 mb-6 text-sm leading-relaxed">Our friendly operators are ready to take your order or answer questions.</p>
@@ -474,7 +474,21 @@
   html.dark header, html.dark header.bg-white { background-color: #111827 !important; border-bottom: 1px solid #374151 !important; }
   html.dark footer { background-color: #111827 !important; border-top: 1px solid #374151 !important; }
   html.dark input, html.dark textarea, html.dark select { background-color: #374151 !important; color: #f3f4f6 !important; border-color: #4b5563 !important; }
-</style>
+  /* Toggle button light mode - explicit green styling */
+  #navThemeToggle, #navRtlToggle {
+    background-color: #dcfce7 !important;
+    border-color: #16a34a !important;
+    color: #15803d !important;
+  }
+  #navThemeToggle:hover, #navRtlToggle:hover {
+    background-color: #16a34a !important;
+    color: #ffffff !important;
+  }
+  html.dark #navThemeToggle, html.dark #navRtlToggle {
+    background-color: #1f2937 !important;
+    border-color: #4b5563 !important;
+    color: #4ade80 !important;
+  }</style>
 <script>
   function toggleDarkMode() {
     document.documentElement.classList.toggle("dark");
@@ -506,6 +520,10 @@
 </script>
 </body>
 </html>
+
+
+
+
 
 
 
