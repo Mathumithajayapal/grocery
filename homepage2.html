@@ -78,10 +78,10 @@
                 <div class="hidden xl:flex items-center gap-4">
                     <!-- Toggles -->
                     <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-green-500 bg-green-100 text-green-700 hover:bg-green-500 hover:text-white transition-all focus:outline-none shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-green-400" id="navThemeToggle" title="Toggle Dark Mode">
-                        <i class="fas fa-moon text-lg"></i>
+                        <i class="fas fa-moon text-lg theme-toggle-icon"></i>
                     </button>
-                    <button onclick="toggleRTL()" class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-green-500 bg-green-100 text-green-700 hover:bg-green-500 hover:text-white transition-all focus:outline-none font-bold text-sm shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-green-400" id="navRtlToggle" title="Toggle RTL">
-                        EN
+                    <button onclick="toggleRTL()" class="rtl-toggle-btn w-10 h-10 rounded-full flex items-center justify-center border-2 border-green-500 bg-green-100 text-green-700 hover:bg-green-500 hover:text-white transition-all focus:outline-none font-bold text-sm shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-green-400" id="navRtlToggle" title="Toggle RTL">
+                        RTL
                     </button>
                     <a href="signin.html" class="border-2 border-brand text-brand hover:bg-brand hover:text-white px-6 py-2 rounded-full font-bold transition-all text-lg shadow-sm">
                         Log in
@@ -125,6 +125,16 @@
                     <a href="signin.html" class="block w-full text-center bg-brand text-white p-3 rounded-lg hover:bg-brand-dark shadow-md">
                         Login
                     </a>
+                </li>
+
+                <!-- Mobile Toggles -->
+                <li class="pt-4 flex justify-center gap-6">
+                    <button onclick="toggleDarkMode()" id="mobileThemeToggle" class="w-12 h-12 rounded-full flex items-center justify-center border-2 border-green-500 bg-green-100 text-green-700 hover:bg-green-500 hover:text-white transition-all focus:outline-none shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-green-400" title="Toggle Dark Mode">
+                        <i class="fas fa-moon text-xl theme-toggle-icon"></i>
+                    </button>
+                    <button onclick="toggleRTL()" id="mobileRtlToggle" class="rtl-toggle-btn w-12 h-12 rounded-full flex items-center justify-center border-2 border-green-500 bg-green-100 text-green-700 hover:bg-green-500 hover:text-white transition-all focus:outline-none font-bold text-base shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-green-400" title="Toggle RTL">
+                        RTL
+                    </button>
                 </li>
             </ul>
         </div>
@@ -393,7 +403,7 @@
                             </li>
                             <li class="flex items-center gap-4 text-gray-800 text-lg font-medium">
                                 <span class="w-10 h-10 rounded-full bg-brand text-white flex items-center justify-center shrink-0"><i class="fas fa-check"></i></span>
-                                Secure billingâ€”no credit card needed at the door
+                                Secure billing—no credit card needed at the door
                             </li>
                         </ul>
                         
@@ -601,32 +611,31 @@
   html.dark header, html.dark header.bg-white { background-color: #111827 !important; border-bottom: 1px solid #374151 !important; }
   html.dark footer { background-color: #111827 !important; border-top: 1px solid #374151 !important; }
   html.dark input, html.dark textarea, html.dark select { background-color: #374151 !important; color: #f3f4f6 !important; border-color: #4b5563 !important; }
+  
   /* Toggle button light mode - explicit green styling */
-  #navThemeToggle, #navRtlToggle {
+  #navThemeToggle, #navRtlToggle, #mobileThemeToggle, #mobileRtlToggle {
     background-color: #dcfce7 !important;
     border-color: #16a34a !important;
     color: #15803d !important;
   }
-  #navThemeToggle:hover, #navRtlToggle:hover {
+  #navThemeToggle:hover, #navRtlToggle:hover, #mobileThemeToggle:hover, #mobileRtlToggle:hover {
     background-color: #16a34a !important;
     color: #ffffff !important;
   }
-  html.dark #navThemeToggle, html.dark #navRtlToggle {
+  html.dark #navThemeToggle, html.dark #navRtlToggle, html.dark #mobileThemeToggle, html.dark #mobileRtlToggle {
     background-color: #1f2937 !important;
     border-color: #4b5563 !important;
     color: #4ade80 !important;
-  }</style>
+  }
+</style>
 <script>
   function toggleDarkMode() {
     document.documentElement.classList.toggle("dark");
-    const icon = document.querySelector("#navThemeToggle i");
-    if (icon) {
-      if (document.documentElement.classList.contains("dark")) {
-        icon.className = "fas fa-sun";
-      } else {
-        icon.className = "fas fa-moon";
-      }
-    }
+    const isDark = document.documentElement.classList.contains("dark");
+    const icons = document.querySelectorAll(".theme-toggle-icon");
+    icons.forEach(icon => {
+        icon.className = isDark ? "fas fa-sun text-lg theme-toggle-icon" : "fas fa-moon text-lg theme-toggle-icon";
+    });
   }
 
   function toggleRTL() {
@@ -635,30 +644,11 @@
     const newDir = currentDir === "rtl" ? "ltr" : "rtl";
     html.setAttribute("dir", newDir);
     
-    const btn = document.querySelector("#navRtlToggle");
-    if (btn) {
-      if (newDir === "rtl") {
-        btn.innerText = "LTR";
-      } else {
-        btn.innerText = "RTL";
-      }
-    }
+    const btns = document.querySelectorAll(".rtl-toggle-btn");
+    btns.forEach(btn => {
+        btn.innerText = newDir === "rtl" ? "LTR" : "RTL";
+    });
   }
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

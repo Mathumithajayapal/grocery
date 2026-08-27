@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
-    <title>ElderBasket Â· Admin</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ðŸ›’</text></svg>">
+    <title>ElderBasket · Admin</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
@@ -126,10 +126,7 @@
             overflow: hidden;
         }
 
-        /* ============================================================
-           SIDEBAR LOGO â€” EXACT MATCH to ElderBasket text-2xl font-bold 
-           text-brand-dark gap-2 flex items-center
-           ============================================================ */
+        /* ----- SIDEBAR LOGO ----- */
         .sidebar-header {
             padding: 1.5rem;
             border-bottom: 1px solid var(--sidebar-border);
@@ -138,20 +135,20 @@
         .brand-link {
             display: flex;
             align-items: center;
-            gap: 0.5rem; /* gap-2 */
+            gap: 0.5rem; 
             text-decoration: none;
             margin-bottom: 0.2rem;
-            color: #15803d; /* text-brand-dark */
-            font-size: 1.5rem; /* text-2xl */
-            font-weight: 700; /* font-bold */
+            color: #15803d; 
+            font-size: 1.5rem; 
+            font-weight: 700; 
         }
 
         body.dark-mode .brand-link {
-            color: #dcfce7; /* text-brand-light for visibility in dark mode */
+            color: #dcfce7; 
         }
 
         .brand-link i {
-            color: #16a34a; /* text-brand */
+            color: #16a34a; 
         }
 
         .brand-logo-sub {
@@ -237,7 +234,7 @@
             flex: 1;
             margin-left: 280px;
             padding: 1.5rem 2rem;
-            transition: margin-left 0.3s ease;
+            transition: margin-left 0.3s ease, margin-right 0.3s ease;
             min-height: 100vh;
             position: relative;
             z-index: 1;
@@ -316,6 +313,48 @@
             }
         }
 
+        /* Hide hamburger when sidebar is open (Mobile) */
+        @media (max-width: 768px) {
+            body.sidebar-open .menu-toggle {
+                display: none !important;
+            }
+        }
+
+        /* ----- GLOBAL TOP BAR (Fixed Search & Toggles) ----- */
+        .global-top-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .global-top-bar {
+                margin-bottom: 1.5rem;
+                padding-left: 60px; /* Space for hamburger on mobile */
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+            body.rtl-active .global-top-bar {
+                padding-left: 0;
+                padding-right: 60px; /* Switch padding for RTL hamburger */
+            }
+            .profile-name {
+                display: none; /* Hide name on mobile to save space */
+            }
+            .user-profile {
+                padding-left: 0;
+                border-left: none;
+            }
+            .search-bar {
+                display: none !important; /* Hide search bar on mobile */
+            }
+        }
+
         /* Page Container */
         .page-container {
             display: none;
@@ -373,14 +412,6 @@
             align-items: center;
             gap: 1rem;
             flex-wrap: wrap;
-        }
-
-        @media (max-width: 768px) {
-            .header-actions {
-                width: 100%;
-                flex-direction: column;
-                gap: 0.8rem;
-            }
         }
 
         .search-bar {
@@ -450,7 +481,7 @@
             align-items: center;
             gap: 0.75rem;
             cursor: pointer;
-            padding-left: 0.5rem;
+            padding-left: 0.75rem;
             border-left: 1px solid var(--border-light);
         }
 
@@ -464,6 +495,7 @@
             justify-content: center;
             color: white;
             font-weight: 600;
+            background: linear-gradient(135deg, var(--pool-primary), var(--pool-accent));
         }
 
         /* Stats Grid */
@@ -920,25 +952,6 @@
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
-        
-        /* Hide search bar on mobile */
-        @media (max-width: 768px) {
-            .search-bar {
-                display: none !important;
-            }
-            .header-actions {
-                justify-content: flex-end;
-                flex-direction: row;
-                width: 100%;
-            }
-            .user-profile {
-                border-left: none;
-                padding-left: 0;
-            }
-            body.sidebar-open .menu-toggle {
-                display: none !important;
-            }
-        }
     </style>
 </head>
 <body>
@@ -956,7 +969,7 @@
                     <i class="fas fa-shopping-basket"></i>
                     <span>ElderBasket</span>
                 </a>
-                <span class="brand-logo-sub">Senior Delivery Â· Admin</span>
+                <span class="brand-logo-sub">Senior Delivery · Admin</span>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item" data-page="dashboard"><a class="nav-link active"><i class="fas fa-chart-line"></i><span>Overview</span></a></li>
@@ -973,6 +986,24 @@
         </aside>
 
         <main class="main-content" id="mainContent">
+
+            <!-- GLOBAL TOP BAR: Permanently outside dynamic page containers so it NEVER disappears! -->
+            <div class="global-top-bar">
+                <div class="search-bar">
+                    <i class="fas fa-search" style="color:var(--text-muted)"></i>
+                    <input type="text" placeholder="Search orders, customers...">
+                </div>
+                <div class="toggle-buttons">
+                    <button class="icon-btn" id="darkModeIconBtn" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+                    <button class="icon-btn text-btn" id="rtlIconBtn" aria-label="Toggle RTL">LTR</button>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar" id="globalAvatar"><i class="fas fa-user-shield"></i></div>
+                    <span style="font-weight:600;" class="profile-name" id="globalName">Admin</span>
+                </div>
+            </div>
+
+            <!-- Page Views -->
             <div id="dashboard-page" class="page-container active-page"></div>
             <div id="deliveries-page" class="page-container"></div>
             <div id="customers-page" class="page-container"></div>
@@ -1101,8 +1132,7 @@
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('elderbasket_admin_darkMode', document.body.classList.contains('dark-mode'));
             const darkIcon = document.getElementById('darkModeIconBtn');
-            if (darkIcon) darkIcon.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i>' :
-                '<i class="fas fa-moon"></i>';
+            if (darkIcon) darkIcon.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         }
 
         function toggleRTL() {
@@ -1111,6 +1141,10 @@
             const rtlBtn = document.getElementById('rtlIconBtn');
             if (rtlBtn) rtlBtn.innerHTML = document.body.classList.contains('rtl-active') ? 'RTL' : 'LTR';
         }
+
+        // Attach listeners globally once
+        document.getElementById('darkModeIconBtn')?.addEventListener('click', toggleDarkMode);
+        document.getElementById('rtlIconBtn')?.addEventListener('click', toggleRTL);
 
         function closeSidebar() {
             sidebar.classList.remove('mobile-open');
@@ -1144,14 +1178,6 @@
             dashboardDiv.innerHTML = `
             <div class="top-header">
               <div class="page-title"><h1>Platform Overview</h1><p>Daily metrics for senior delivery operations.</p></div>
-              <div class="header-actions">
-                <div class="search-bar"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text" placeholder="Search orders, customers..."></div>
-                <div class="toggle-buttons">
-                  <button class="icon-btn" id="darkModeIconBtn"><i class="fas fa-moon"></i></button>
-                  <button class="icon-btn text-btn" id="rtlIconBtn">LTR</button>
-                </div>
-                <div class="user-profile"><div class="user-avatar"><i class="fas fa-user-shield"></i></div><span style="font-weight:600;">Admin</span></div>
-              </div>
             </div>
             <div class="stats-grid">
               <div class="stat-card"><div class="stat-icon"><i class="fas fa-truck"></i></div><div class="stat-value">1,248</div><div class="stat-label">Monthly Deliveries</div></div>
@@ -1168,7 +1194,7 @@
               <div class="chart-card"><div class="card-header"><h3>Order Volume</h3><span style="color:var(--text-muted); font-size:0.8rem;">Last 6 Months</span></div><div style="width:100%; height:220px; position:relative;"><canvas id="salesChart"></canvas></div></div>
               <div class="chart-card"><div class="card-header"><h3>Popular Categories</h3></div><div id="topCategoriesList"></div></div>
             </div>
-            <div class="data-table"><div class="card-header"><h3>Recent Deliveries</h3><a href="#" style="color:var(--pool-primary); font-size:0.85rem; font-weight:700;" onclick="showPage('deliveries'); return false;">View All â†’</a></div><div id="recentOpsTable"></div></div>
+            <div class="data-table"><div class="card-header"><h3>Recent Deliveries</h3><a href="#" style="color:var(--pool-primary); font-size:0.85rem; font-weight:700;" onclick="showPage('deliveries'); return false;">View All →</a></div><div id="recentOpsTable"></div></div>
             <div class="chart-card"><div class="card-header"><h3>System Activity</h3></div><div id="activityFeed"></div></div>
           `;
 
@@ -1221,8 +1247,6 @@
                 });
             }
 
-            document.getElementById('darkModeIconBtn')?.addEventListener('click', toggleDarkMode);
-            document.getElementById('rtlIconBtn')?.addEventListener('click', toggleRTL);
             document.getElementById('addOrderBtn')?.addEventListener('click', () => alert('Order form opening...'));
             document.getElementById('contactDriverBtn')?.addEventListener('click', () => alert('Messaging panel opening...'));
         }
@@ -1232,7 +1256,7 @@
             const processing = deliveriesData.filter(o => o.status === 'Processing').length;
             const completed = deliveriesData.filter(o => o.status === 'Completed').length;
             document.getElementById('deliveries-page').innerHTML = `
-            <div class="top-header"><div class="page-title"><h1>Delivery Dispatch</h1><p>Monitor and assign active orders.</p></div><div class="header-actions"><div class="search-bar"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text" placeholder="Search Order ID..."></div></div></div>
+            <div class="top-header"><div class="page-title"><h1>Delivery Dispatch</h1><p>Monitor and assign active orders.</p></div></div>
             <div class="stats-grid">
               <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-value">${pending}</div><div class="stat-label">Awaiting Dispatch</div></div>
               <div class="stat-card"><div class="stat-icon"><i class="fas fa-truck-loading"></i></div><div class="stat-value">${processing}</div><div class="stat-label">In Transit / Shopping</div></div>
@@ -1365,7 +1389,11 @@
             const darkIcon = document.getElementById('darkModeIconBtn');
             if (darkIcon) darkIcon.innerHTML = '<i class="fas fa-moon"></i>';
         }
-        if (localStorage.getItem('elderbasket_admin_rtl') === 'true') document.body.classList.add('rtl-active');
+        if (localStorage.getItem('elderbasket_admin_rtl') === 'true') {
+            document.body.classList.add('rtl-active');
+            const rtlBtn = document.getElementById('rtlIconBtn');
+            if (rtlBtn) rtlBtn.innerHTML = 'RTL';
+        }
 
         // Initialize all pages
         renderDashboard();
@@ -1375,12 +1403,6 @@
         renderAnalytics();
         renderSettings();
 
-        // Re-attach global toggle listeners
-        setTimeout(() => {
-            document.getElementById('darkModeIconBtn')?.addEventListener('click', toggleDarkMode);
-            document.getElementById('rtlIconBtn')?.addEventListener('click', toggleRTL);
-        }, 100);
     </script>
 </body>
 </html>
-

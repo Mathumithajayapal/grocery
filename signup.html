@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sign Up Â· ElderBasket</title>
+  <title>Sign Up · ElderBasket</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
@@ -281,38 +281,44 @@
     }
     .dark .signup-divider hr { border-top-color: #374151; }
 
+    /* ===== MATCHED SOCIAL LOGIN STYLES ===== */
     .social-login {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       justify-content: center;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
-    .social-login a {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+    
+    .social-btn {
+      flex: 1;
       background: transparent;
+      border: 2px solid #e5e7eb;
+      border-radius: 60px;
+      padding: 0;
+      height: 48px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-primary);
-      font-size: 1rem;
-      transition: 0.3s;
-      border: 2px solid #000;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
     }
-    .dark .social-login a {
+    .dark .social-btn {
       border-color: #374151;
     }
-    .social-login a:hover {
-      background: rgba(22, 163, 74, 0.05);
+    .social-btn:hover {
       border-color: var(--brand-primary);
-      transform: translateY(-3px);
+      background: rgba(22, 163, 74, 0.05);
+      transform: translateY(-2px);
     }
-    .social-login a img {
-      width: 20px;
-      height: 20px;
-      object-fit: contain;
-    }
+    .social-btn i { font-size: 1.1rem; }
+    .social-btn.google i { color: #EA4335; }
+    .social-btn.apple i { color: #000; }
+    body.dark .social-btn.apple i { color: #fff; }
 
     /* Fixed Layout for text flow in RTL */
     .signin-link {
@@ -328,12 +334,6 @@
       font-weight: 700;
     }
     .signin-link a:hover { text-decoration: underline; }
-
-    /* Social icons color fix */
-    .fa-google { color: #EA4335; }
-    .fa-facebook-f { color: #1877F2; }
-    .fa-apple { color: #000000; }
-    body.dark .fa-apple { color: #ffffff; }
 
     .signup-card form {
       flex: 0 0 auto;
@@ -402,10 +402,14 @@
     <hr> <span dir="auto">or sign up with</span> <hr>
   </div>
 
+  <!-- Updated Social Login to Match Sign In Page -->
   <div class="social-login">
-    <a href="#" aria-label="Google"><img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google" width="20" height="20"></a>
-    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-    <a href="#" aria-label="Apple"><i class="fab fa-apple"></i></a>
+    <button type="button" class="social-btn google" id="googleLogin">
+      <i class="fab fa-google"></i> <span>Google</span>
+    </button>
+    <button type="button" class="social-btn apple" id="appleLogin">
+      <i class="fab fa-apple"></i> <span>Apple</span>
+    </button>
   </div>
 
   <div class="signin-link">
@@ -483,5 +487,3 @@
 
 </body>
 </html>
-
-
