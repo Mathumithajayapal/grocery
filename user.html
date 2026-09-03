@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -1335,17 +1335,17 @@
             <div class="top-header"><div class="page-title"><h1>Family Portal</h1><p>Manage caregiver access to your ElderBasket account.</p></div></div>
             
             <div class="chart-card" style="margin-bottom: 2rem;">
-                <div class="card-header"><h3>Authorized Caregivers</h3><button style="background:var(--pool-primary); color:#fff; border:none; padding:0.5rem 1rem; border-radius:6px; font-weight:600; cursor:pointer;">+ Invite Family Member</button></div>
+                <div class="card-header" style="gap:1rem;"><h3>Authorized Caregivers</h3><button style="background:var(--pool-primary); color:#fff; border:none; padding:0.4rem 0.8rem; font-size:0.9rem; border-radius:6px; font-weight:600; cursor:pointer; flex-shrink:0;">+ Invite Family Member</button></div>
                 
-                <div style="display:flex; align-items:center; gap:1.5rem; padding:1.5rem; border:1px solid var(--border-light); border-radius:12px; margin-bottom:1rem;">
-                    <div style="width:60px; height:60px; border-radius:50%; background:var(--pool-light); color:var(--pool-dark); display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:700;">SJ</div>
-                    <div style="flex:1;">
-                        <h4 style="font-size:1.2rem; font-weight:700;">Sarah Jenkins</h4>
+                <div style="display:flex; flex-wrap:wrap; align-items:center; gap:1rem; padding:1rem; border:1px solid var(--border-light); border-radius:12px; margin-bottom:1rem;">
+                    <div style="width:50px; height:50px; border-radius:50%; background:var(--pool-light); color:var(--pool-dark); display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:700; flex-shrink:0;">SJ</div>
+                    <div style="flex:1 1 180px;">
+                        <h4 style="font-size:1.1rem; font-weight:700; margin-bottom:0.2rem;">Sarah Jenkins</h4>
                         <p style="color:var(--text-muted); font-size:0.9rem;">Relationship: Daughter</p>
-                        <div style="margin-top:0.5rem;"><span class="badge-chip">Full Access</span> <span class="badge-chip">Payment Authorized</span></div>
+                        <div style="margin-top:0.5rem; display:flex; flex-wrap:wrap; gap:0.4rem;"><span class="badge-chip">Full Access</span> <span class="badge-chip">Payment Authorized</span></div>
                     </div>
-                    <div>
-                        <button style="background:transparent; border:1px solid var(--border-light); padding:0.5rem 1rem; border-radius:6px; color:var(--text-muted); cursor:pointer;"><i class="fas fa-cog"></i> Manage</button>
+                    <div style="margin-left:auto; flex:0 0 auto;">
+                        <button style="background:transparent; border:1px solid var(--border-light); padding:0.4rem 0.8rem; font-size:0.9rem; border-radius:6px; color:var(--text-muted); cursor:pointer;"><i class="fas fa-cog"></i> Manage</button>
                     </div>
                 </div>
             </div>
@@ -1366,7 +1366,7 @@
             document.getElementById('support-page').innerHTML = `
             <div class="top-header"><div class="page-title"><h1>Support & FAQ</h1><p>We are here to help make your delivery experience perfect.</p></div></div>
             
-            <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
               <div class="stat-card" style="text-align:center; padding:3rem 2rem;">
                   <div class="stat-icon" style="margin: 0 auto 1.5rem auto; width:80px; height:80px;"><i class="fas fa-phone-alt" style="font-size:2.5rem; transform: rotate(90deg);"></i></div>
                   <h3 style="font-size:1.5rem; font-weight:800; margin-bottom:0.5rem;">Call Us Directly</h3>
